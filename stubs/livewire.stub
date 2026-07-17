@@ -1,0 +1,52 @@
+<?php
+
+namespace [namespace];
+
+use Closure;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
+use Livewire\Component;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Throwable;
+
+class [class] extends Component
+{
+    public string $title = '';
+
+    public function render(): \Illuminate\Contracts\View\View
+    {
+        return view('[view]');
+    }
+
+    public function exception(Throwable $exception, Closure $stopPropagation): void
+    {
+        if ($exception instanceof ValidationException) {
+            return;
+        }
+
+        if (config('app.debug')) {
+            throw $exception;
+        }
+
+        report($exception);
+
+        $message = match (true) {
+            $exception instanceof ModelNotFoundException => 'Data yang diminta tidak ditemukan.',
+            $exception instanceof AuthorizationException => 'Anda tidak memiliki akses untuk melakukan tindakan ini.',
+            $exception instanceof QueryException => 'Terjadi kesalahan saat memproses data di database.',
+            $exception instanceof HttpExceptionInterface => match ($exception->getStatusCode()) {
+                403 => 'Anda tidak memiliki akses ke halaman atau tindakan ini.',
+                404 => 'Halaman atau data yang diminta tidak ditemukan.',
+                419 => 'Sesi Anda telah berakhir. Silakan muat ulang halaman.',
+                429 => 'Terlalu banyak permintaan. Silakan coba kembali beberapa saat lagi.',
+                default => 'Permintaan tidak dapat diproses.',
+            },
+            default => 'Terjadi kesalahan. Silakan coba kembali atau hubungi administrator.',
+        };
+
+        session()->flash('error', $message);
+        $stopPropagation();
+    }
+}

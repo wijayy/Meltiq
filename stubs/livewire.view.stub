@@ -1,0 +1,14 @@
+<div class="space-y-4">
+    <x-slot name="title">
+        {{ $title }}
+    </x-slot>
+
+    <flux:sidebar-header>
+        {{ $title }}
+
+        <x-slot name="button"></x-slot>
+    </flux:sidebar-header>
+
+    <flux:sidebar-content class="">
+    </flux:sidebar-content>
+</div>
