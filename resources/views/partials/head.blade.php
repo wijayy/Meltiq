@@ -5,7 +5,7 @@
     {{ filled($title ?? null) ? $title . ' | ' . config('app.name', 'Meltiq CIS') : config('app.name', 'Meltiq CIS') }}
 </title>
 
-<link rel="icon" href="{{ asset('assets/logo/light.jpeg) }}" sizes="any">
+<link rel="icon" href="{{ asset('assets/logo/light.jpeg') }}" sizes="any">
 
 @fonts
 
