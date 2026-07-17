@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\InventorySeeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,10 +17,13 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin Meltiq',
             'email' => 'admin@meltiq.site',
+            'password' => Hash::make('EquinoxA5!')
         ]);
         User::factory()->create([
             'name' => 'User Meltiq',
             'email' => 'user@meltiq.site',
+            'password' => Hash::make('Meltiq289305')
+
         ]);
 
         $this->call([
