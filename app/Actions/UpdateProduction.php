@@ -8,8 +8,8 @@ use App\Models\Production;
 use App\Models\ProductionDetail;
 use App\Models\StockMovement;
 use App\Models\StockSnapshot;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use LogicException;
 
 class UpdateProduction
@@ -35,7 +35,7 @@ class UpdateProduction
             );
 
             if ($this->hasCapturedMovement($movements)) {
-                throw new LogicException('Production tidak dapat diubah karena stoknya sudah masuk stock snapshot.');
+                throw new LogicException('Produksi tidak dapat diubah karena stoknya sudah masuk rekaman stok.');
             }
 
             foreach ($movements as $movement) {
@@ -95,7 +95,7 @@ class UpdateProduction
             ->firstOrFail();
 
         if ($stock->stock < $movement->qty) {
-            throw new LogicException('Production tidak dapat diubah karena stok warehouse sudah digunakan.');
+            throw new LogicException('Produksi tidak dapat diubah karena stok gudang sudah digunakan.');
         }
 
         $stock->decrement('stock', $movement->qty);

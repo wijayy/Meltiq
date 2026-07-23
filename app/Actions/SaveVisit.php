@@ -54,11 +54,11 @@ class SaveVisit
             $submittedProductIds = collect($details)->pluck('product_id');
 
             if ($submittedProductIds->count() !== $submittedProductIds->unique()->count()) {
-                throw new LogicException('Setiap produk hanya boleh muncul satu kali dalam Visit.');
+                throw new LogicException('Setiap produk hanya boleh muncul satu kali dalam pengiriman.');
             }
 
             if ($requiredProductIds->diff($submittedProductIds)->isNotEmpty()) {
-                throw new LogicException('Semua produk yang memiliki stock di outlet wajib diisi pada Visit.');
+                throw new LogicException('Semua produk yang memiliki stok di outlet wajib diisi pada pengiriman.');
             }
 
             foreach ($details as $detailData) {
@@ -75,7 +75,7 @@ class SaveVisit
 
         foreach ($movements as $movement) {
             if ($this->isCaptured($movement)) {
-                throw new LogicException('Visit tidak dapat diubah karena stoknya sudah masuk stock snapshot.');
+                throw new LogicException('Pengiriman tidak dapat diubah karena stoknya sudah masuk rekaman stok.');
             }
 
             if ($movement->to_location_id) {
@@ -99,7 +99,7 @@ class SaveVisit
         $warehouseStock = $this->stock($data['product_id'], $warehouse->id);
 
         if ($outletStock->stock !== $data['stockBefore']) {
-            throw new LogicException('Stock outlet berubah. Muat ulang data Visit sebelum menyimpan.');
+            throw new LogicException('Stok outlet berubah. Muat ulang data pengiriman sebelum menyimpan.');
         }
 
         if ($data['stockBefore'] === 0
@@ -107,7 +107,7 @@ class SaveVisit
             throw new LogicException('Produk baru hanya dapat diisi pada new delivery qty.');
         }
 
-        if ($data['physicalStock'] + $data['expiredQty'] > $data['stockBefore']) {
+        if ($data['stockBefore'] < $data['physicalStock'] + $data['expiredQty']) {
             throw new LogicException('Physical stock dan expired tidak boleh melebihi stock before.');
         }
 
@@ -174,7 +174,7 @@ class SaveVisit
         $stock = $this->stock($productId, $locationId);
 
         if ($stock->stock + $change < 0) {
-            throw new LogicException('Visit tidak dapat diubah karena stock hasil transaksi sudah digunakan.');
+            throw new LogicException('Pengiriman tidak dapat diubah karena stok hasil transaksi sudah digunakan.');
         }
 
         $stock->increment('stock', $change);

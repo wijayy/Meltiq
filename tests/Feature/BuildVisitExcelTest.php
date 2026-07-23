@@ -39,14 +39,16 @@ it('builds visit blocks followed by stock details', function () {
     $sheet = IOFactory::load($path)->getActiveSheet();
 
     expect(substr($contents, 0, 2))->toBe('PK')
-        ->and($sheet->getCell('A1')->getValue())->toBe('LAPORAN VISIT')
+        ->and($sheet->getCell('A1')->getValue())->toBe('LAPORAN PENGIRIMAN')
         ->and($sheet->getCell('B3')->getValue())->toBe('VST20260717')
         ->and($sheet->getCell('B4')->getValue())->toBe('Outlet Renon')
         ->and($sheet->getCell('B5')->getValue())->toBe('01/07/2026 s/d 31/07/2026')
         ->and($sheet->getCell('A10')->getValue())->toBe('VST20260717001')
         ->and($sheet->getCell('C10')->getValue())->toBe('Outlet Renon')
         ->and($sheet->getCell('J10')->getValue())->toBe(10)
-        ->and($sheet->getCell('A12')->getValue())->toBe('DETAIL PRODUCT')
+        ->and($sheet->getCell('A12')->getValue())->toBe('DETAIL PRODUK')
+        ->and($sheet->getStyle('A1')->getFill()->getStartColor()->getRGB())->toBe('4E2011')
+        ->and($sheet->getStyle('A1')->getFont()->getColor()->getRGB())->toBe('FFFFFF')
         ->and($sheet->getCell('B14')->getValue())->toBe($product->name)
         ->and($sheet->getCell('F14')->getValue())->toBe(5)
         ->and($sheet->getCell('J14')->getValue())->toBe(20);

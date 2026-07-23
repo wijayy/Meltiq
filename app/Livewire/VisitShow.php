@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class VisitShow extends Component
 {
-    public string $title = 'Detail Visit';
+    public string $title = 'Detail Pengiriman';
 
     public Visit $visit;
 

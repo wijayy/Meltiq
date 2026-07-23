@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class ProductionShow extends Component
 {
-    public string $title = 'Detail Production';
+    public string $title = 'Detail Produksi';
 
     public Production $production;
 

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProductionIndex extends Component
 {
-    public string $title = 'Production';
+    public string $title = 'Produksi';
 
     #[Url(as: 'number', except: '')]
     public string $productionNo = '';
@@ -76,7 +76,7 @@ class ProductionIndex extends Component
             function () use ($contents): void {
                 echo $contents;
             },
-            'production-report-'.now()->format('Ymd-His').'.xlsx',
+            'laporan-produksi-'.now()->format('Ymd-His').'.xlsx',
             ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
         );
     }

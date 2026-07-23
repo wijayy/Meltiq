@@ -27,8 +27,8 @@ test('dashboard displays operational stock metrics', function () {
     $this->actingAs($user)
         ->get(route('dashboard'))
         ->assertOk()
-        ->assertSee('Product Aktif')
-        ->assertSee('Total Stock')
+        ->assertSee('Produk Aktif')
+        ->assertSee('Total Stok')
         ->assertSee('Produk Dashboard')
         ->assertSee('Outlet Dashboard');
 });

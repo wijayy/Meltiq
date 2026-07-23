@@ -47,11 +47,13 @@ it('exports movement details and the product location summary matrix', function 
     $sheet = IOFactory::load($path)->getActiveSheet();
 
     expect(substr($contents, 0, 2))->toBe('PK')
-        ->and($sheet->getCell('A1')->getValue())->toBe('LAPORAN STOCK MOVEMENT')
+        ->and($sheet->getCell('A1')->getValue())->toBe('LAPORAN PERGERAKAN STOK')
         ->and($sheet->getCell('C3')->getValue())->toBe('01/07/2026 s/d 31/07/2026')
         ->and($sheet->getCell('C10')->getValue())->toContain($product->name)
         ->and($sheet->getCell('G10')->getValue())->toBe($movement->qty)
-        ->and($sheet->getCell('B13')->getValue())->toBe('RANGKUMAN MOVEMENT PER PRODUCT DAN LOCATION')
+        ->and($sheet->getCell('B13')->getValue())->toBe('RANGKUMAN PERGERAKAN PER PRODUK DAN LOKASI')
+        ->and($sheet->getStyle('A1')->getFill()->getStartColor()->getRGB())->toBe('4E2011')
+        ->and($sheet->getStyle('A1')->getFont()->getColor()->getRGB())->toBe('FFFFFF')
         ->and($sheet->getCell('C14')->getValue())->toBe('Outlet Renon')
         ->and($sheet->getCell('E14')->getValue())->toBe('Warehouse Utama')
         ->and($sheet->getCell('C15')->getValue())->toBe('Bertambah')

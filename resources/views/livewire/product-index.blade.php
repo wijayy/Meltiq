@@ -1,36 +1,17 @@
-<div class="space-y-4">
+<div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">
         {{ $title }}
     </x-slot>
-
-    <livewire:sidebar-header>
-
-
-
-        <x-slot name="title">{{ $title }}</x-slot>
-        <x-slot:actions>
-
-            <flux:button wire:click="$dispatch('createCategory')">
-                Add Category
-            </flux:button>
-
-            <flux:button variant="danger">
-                Delete
-            </flux:button>
-
-        </x-slot:actions>
-
-    </livewire:sidebar-header>
 
     <flux:sidebar-header>
         {{ $title }}
 
         <x-slot name="button">
             <flux:button wire:click="createCategory" variant="secondary" size="sm">
-                Add Category
+                Tambah Kategori
             </flux:button>
             <flux:button wire:click="createProduct" variant="primary" size="sm">
-                Add Product
+                Tambah Produk
             </flux:button>
         </x-slot>
     </flux:sidebar-header>
@@ -43,9 +24,9 @@
             </div>
             <div class="w-1/3">
                 <flux:select wire:model.live="status">
-                    <flux:select.option value="active">Active</flux:select.option>
-                    <flux:select.option value="nonactive">Nonactive</flux:select.option>
-                    <flux:select.option value="all">All</flux:select.option>
+                    <flux:select.option value="active">Aktif</flux:select.option>
+                    <flux:select.option value="nonactive">Tidak Aktif</flux:select.option>
+                    <flux:select.option value="all">Semua</flux:select.option>
                 </flux:select>
             </div>
         </div>
@@ -54,16 +35,16 @@
             <div class="w-1/5">Name</div>
             <div class="w-1/5 text-center">SKU</div>
             <div class="w-1/5 text-center">Cost Price</div>
-            <div class="w-1/5 text-center">Stock on Hand</div>
+            <div class="w-1/5 text-center">Stok Tersedia</div>
             <div class="w-1/5 text-center">Actions</div>
         </div>
         @foreach ($this->categories as $key => $category)
             <div class="flex items-center gap-4 min-w-3xl border-t pt-2 border-mine-200 dark:border-mine-400">
-                <div class="w-4/5 font-semibold">Category : {{ $category->name }}</div>
+                <div class="w-4/5 font-semibold">Kategori: {{ $category->name }}</div>
                 <div class="w-1/5 flex justify-center gap-2">
                     @if ($category->isActive)
                         <flux:button wire:click="editCategory({{ $category->id }})" variant="primary" size="sm">
-                            Edit
+                            Ubah
                         </flux:button>
                         <flux:button wire:click="openDeleteModal('category', {{ $category->id }})" variant="danger"
                             size="sm">
@@ -85,8 +66,9 @@
                     <div class="w-1/5 text-center">{{ $product->currentStockOnHand }} Pcs</div>
                     <div class="w-1/5 flex justify-center gap-2">
                         @if ($product->isActive)
-                            <flux:button wire:click="editProduct({{ $product->id }})" variant="primary" size="sm">
-                                Edit
+                            <flux:button wire:click="editProduct({{ $product->id }})" variant="primary"
+                                size="sm">
+                                Ubah
                             </flux:button>
                             <flux:button wire:click="openDeleteModal('product', {{ $product->id }})" variant="danger"
                                 size="sm">
@@ -105,7 +87,8 @@
     </flux:sidebar-content>
 
     <flux:modal name="delete-product-data" class="max-w-md">
-        <flux:heading size="lg">Nonaktifkan {{ $deleteType === 'category' ? 'Category' : 'Product' }}</flux:heading>
+        <flux:heading size="lg">Nonaktifkan {{ $deleteType === 'category' ? 'Kategori' : 'Produk' }}
+        </flux:heading>
         <flux:text class="mt-2">
             Data tidak akan dihapus permanen, tetapi tidak lagi ditampilkan. Jika category dinonaktifkan, seluruh
             product aktif di dalamnya juga akan dinonaktifkan.

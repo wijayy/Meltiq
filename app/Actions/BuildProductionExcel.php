@@ -22,18 +22,18 @@ class BuildProductionExcel
     {
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Production');
+        $sheet->setTitle('Produksi');
         $sheet->mergeCells('A1:E1');
-        $sheet->setCellValue('A1', 'LAPORAN PRODUCTION');
+        $sheet->setCellValue('A1', 'LAPORAN PRODUKSI');
         $sheet->fromArray([
-            ['Nomor Production', $filters['production_no']],
-            ['Period', $filters['period_begin'].' s/d '.$filters['period_end']],
-            ['Created By', $filters['created_by']],
-            ['Diexport Pada', $filters['exported_at']],
-            ['Jumlah Production', $productions->count()],
+            ['Nomor Produksi', $filters['production_no']],
+            ['Periode', $filters['period_begin'].' s/d '.$filters['period_end']],
+            ['Dibuat Oleh', $filters['created_by']],
+            ['Diekspor Pada', $filters['exported_at']],
+            ['Jumlah Produksi', $productions->count()],
         ], null, 'A3');
 
-        $mineColor = 'E43A19';
+        $mineColor = '4E2011';
         $sheet->getStyle('A1:E1')->applyFromArray([
             'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $mineColor]],
@@ -44,7 +44,7 @@ class BuildProductionExcel
         $row = 9;
 
         foreach ($productions as $production) {
-            $sheet->fromArray(['Nomor Production', 'Tanggal', 'Created By', 'Catatan', 'Total Qty'], null, 'A'.$row);
+            $sheet->fromArray(['Nomor Produksi', 'Tanggal', 'Dibuat Oleh', 'Catatan', 'Total Jumlah'], null, 'A'.$row);
             $sheet->fromArray([
                 $production->production_no,
                 $production->production_date->format('d/m/Y'),
@@ -61,12 +61,12 @@ class BuildProductionExcel
 
             $detailHeaderRow = $row + 3;
             $sheet->mergeCells('A'.$detailHeaderRow.':E'.$detailHeaderRow);
-            $sheet->setCellValue('A'.$detailHeaderRow, 'DETAIL PRODUCT');
+            $sheet->setCellValue('A'.$detailHeaderRow, 'DETAIL PRODUK');
             $sheet->getStyle('A'.$detailHeaderRow.':E'.$detailHeaderRow)->applyFromArray([
                 'font' => ['bold' => true],
                 'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'FCE4DE']],
             ]);
-            $sheet->fromArray(['No', 'Product', 'SKU', 'Qty', ''], null, 'A'.($detailHeaderRow + 1));
+            $sheet->fromArray(['No', 'Produk', 'SKU', 'Jumlah', ''], null, 'A'.($detailHeaderRow + 1));
             $sheet->getStyle('A'.($detailHeaderRow + 1).':E'.($detailHeaderRow + 1))->getFont()->setBold(true);
 
             $detailRow = $detailHeaderRow + 2;
@@ -95,7 +95,7 @@ class BuildProductionExcel
         $stream = fopen('php://temp', 'w+b');
 
         if ($stream === false) {
-            throw new RuntimeException('Gagal menyiapkan file export production.');
+            throw new RuntimeException('Gagal menyiapkan file ekspor produksi.');
         }
 
         (new Xlsx($spreadsheet))->save($stream);
@@ -105,7 +105,7 @@ class BuildProductionExcel
         $spreadsheet->disconnectWorksheets();
 
         if ($contents === false) {
-            throw new RuntimeException('Gagal membaca file export production.');
+            throw new RuntimeException('Gagal membaca file ekspor produksi.');
         }
 
         return $contents;

@@ -13,9 +13,9 @@ use Livewire\Component;
 
 class ProductIndex extends Component
 {
-    public string $title = 'All Products';
+    public string $title = 'Semua Produk';
 
-    #[Url("search")]
+    #[Url('search')]
     public string $search = '';
 
     #[Url(as: 'status', except: 'active')]
@@ -100,6 +100,7 @@ class ProductIndex extends Component
     {
         $this->dispatch('createCategory');
     }
+
     public function editCategory(int $id): void
     {
         $this->dispatch('editCategory', id: $id);
@@ -136,10 +137,10 @@ class ProductIndex extends Component
             $category = Category::query()->active()->findOrFail($this->deleteId);
             $category->update(['isActive' => false]);
             $category->products()->update(['isActive' => false]);
-            $message = 'Category dan seluruh product di dalamnya berhasil dinonaktifkan.';
+            $message = 'Kategori dan seluruh produk di dalamnya berhasil dinonaktifkan.';
         } elseif ($this->deleteType === 'product') {
             Product::query()->active()->findOrFail($this->deleteId)->update(['isActive' => false]);
-            $message = 'Product berhasil dinonaktifkan.';
+            $message = 'Produk berhasil dinonaktifkan.';
         } else {
             abort(404);
         }
@@ -155,7 +156,7 @@ class ProductIndex extends Component
         $category->update(['isActive' => true]);
         $category->products()->update(['isActive' => true]);
 
-        session()->flash('success', 'Category dan seluruh product berhasil direstore.');
+        session()->flash('success', 'Kategori dan seluruh produk berhasil dipulihkan.');
         unset($this->categories, $this->products);
     }
 
@@ -165,7 +166,7 @@ class ProductIndex extends Component
         $product->update(['isActive' => true]);
         $product->category()->update(['isActive' => true]);
 
-        session()->flash('success', 'Product berhasil direstore.');
+        session()->flash('success', 'Produk berhasil dipulihkan.');
         unset($this->categories, $this->products);
     }
 

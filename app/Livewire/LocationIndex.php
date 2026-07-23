@@ -13,7 +13,7 @@ use Livewire\Component;
 
 class LocationIndex extends Component
 {
-    public string $title = 'Locations';
+    public string $title = 'Lokasi';
 
     public ?int $locationId = null;
 
@@ -91,8 +91,8 @@ class LocationIndex extends Component
 
         if (! $location->canDeactivate()) {
             session()->flash('error', $location->isSystemLocation()
-                ? 'Location digunakan oleh konfigurasi sistem dan tidak dapat dinonaktifkan.'
-                : 'Minimal satu location untuk tipe ini harus tetap aktif.');
+                ? 'Lokasi digunakan oleh konfigurasi sistem dan tidak dapat dinonaktifkan.'
+                : 'Minimal satu lokasi untuk tipe ini harus tetap aktif.');
 
             $this->closeDeleteModal();
 
@@ -112,7 +112,7 @@ class LocationIndex extends Component
             ->findOrFail($id)
             ->update(['isActive' => true]);
 
-        session()->flash('success', 'Location berhasil direstore.');
+        session()->flash('success', 'Lokasi berhasil dipulihkan.');
         unset($this->locations);
     }
 

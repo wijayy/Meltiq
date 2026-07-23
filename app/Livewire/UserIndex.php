@@ -13,7 +13,7 @@ use Livewire\Component;
 
 class UserIndex extends Component
 {
-    public string $title = 'Users';
+    public string $title = 'Pengguna';
 
     #[Url(as: 'search', except: '')]
     public string $search = '';
@@ -101,10 +101,10 @@ class UserIndex extends Component
 
         $this->dispatch('modal-close', name: 'user-create');
         session()->flash('success', $isCreating
-            ? 'User berhasil ditambahkan. Email verifikasi telah dikirim.'
+            ? 'Pengguna berhasil ditambahkan. Email verifikasi telah dikirim.'
             : ($emailChanged
-                ? 'User berhasil diperbarui. Email baru perlu diverifikasi.'
-                : 'User berhasil diperbarui.'));
+                ? 'Pengguna berhasil diperbarui. Email baru perlu diverifikasi.'
+                : 'Pengguna berhasil diperbarui.'));
         $this->resetForm();
         unset($this->users);
     }

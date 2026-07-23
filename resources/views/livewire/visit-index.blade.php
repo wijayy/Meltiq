@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
     <flux:sidebar-header>
         {{ $title }}
@@ -6,22 +6,22 @@
             <div class="flex gap-2">
                 <flux:button wire:click="exportExcel" wire:loading.attr="disabled" wire:target="exportExcel"
                     icon="arrow-down-tray" variant="ghost" size="sm">
-                    <span wire:loading.remove wire:target="exportExcel">Export Excel</span>
+                    <span wire:loading.remove wire:target="exportExcel">Ekspor Excel</span>
                     <span wire:loading wire:target="exportExcel">Membuat Excel...</span>
                 </flux:button>
-                <flux:button :href="route('visits.create')" wire:navigate icon="plus" variant="primary" size="sm">Tambah Visit</flux:button>
+                <flux:button :href="route('visits.create')" wire:navigate icon="plus" variant="primary" size="sm">Tambah Pengiriman</flux:button>
             </div>
         </x-slot>
     </flux:sidebar-header>
     <flux:sidebar-content>
         <div class="flex min-w-4xl flex-wrap items-end gap-4">
-            <div class="w-full sm:w-64"><flux:input wire:model.live.debounce.300ms="visitNo" label="Nomor Visit" /></div>
+            <div class="w-full sm:w-64"><flux:input wire:model.live.debounce.300ms="visitNo" label="Nomor Pengiriman" /></div>
             <div class="w-full sm:w-64"><flux:input wire:model.live.debounce.300ms="location" label="Outlet" /></div>
-            <div class="w-full sm:w-48"><flux:input wire:model.live="periodBegin" type="date" label="Period Begin" /></div>
-            <div class="w-full sm:w-48"><flux:input wire:model.live="periodEnd" type="date" label="Period End" /></div>
+            <div class="w-full sm:w-48"><flux:input wire:model.live="periodBegin" type="date" label="Awal Periode" /></div>
+            <div class="w-full sm:w-48"><flux:input wire:model.live="periodEnd" type="date" label="Akhir Periode" /></div>
         </div>
         <div class="flex min-w-4xl items-center gap-4 text-sm font-semibold">
-            <div class="w-10">#</div><div class="w-1/4">Nomor Visit</div><div class="w-1/5">Tanggal</div><div class="w-1/4">Outlet</div><div class="w-1/6 text-center">Produk</div><div class="w-1/5">Created By</div><div class="w-40 text-center">Aksi</div>
+            <div class="w-10">#</div><div class="w-1/4">Nomor Pengiriman</div><div class="w-1/5">Tanggal</div><div class="w-1/4">Outlet</div><div class="w-1/6 text-center">Produk</div><div class="w-1/5">Dibuat Oleh</div><div class="w-40 text-center">Aksi</div>
         </div>
         @forelse ($this->visits as $index => $visit)
             <div wire:key="visit-{{ $visit->id }}" class="flex min-w-4xl items-center gap-4 border-t border-mine-200 pt-2 text-sm dark:border-mine-400">
@@ -36,7 +36,7 @@
                 </div>
             </div>
         @empty
-            <div class="min-w-4xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400">Data visit belum tersedia.</div>
+            <div class="min-w-4xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400">Data pengiriman belum tersedia.</div>
         @endforelse
     </flux:sidebar-content>
 </div>

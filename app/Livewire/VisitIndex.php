@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class VisitIndex extends Component
 {
-    public string $title = 'Visits';
+    public string $title = 'Pengiriman';
 
     #[Url(as: 'number', except: '')]
     public string $visitNo = '';
@@ -78,7 +78,7 @@ class VisitIndex extends Component
             function () use ($contents): void {
                 echo $contents;
             },
-            'visit-report-'.now()->format('Ymd-His').'.xlsx',
+            'laporan-pengiriman-'.now()->format('Ymd-His').'.xlsx',
             ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
         );
     }

@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
 
     <flux:sidebar-header>
@@ -14,10 +14,10 @@
     <flux:sidebar-content>
         <form wire:submit="save" class="space-y-6">
             <div class="grid gap-4 md:grid-cols-2">
-                <flux:input wire:model="productionDate" type="date" label="Tanggal Production" required />
-                <flux:input :value="$this->warehouse->name" label="Warehouse Tujuan" readonly />
+                <flux:input wire:model="productionDate" type="date" label="Tanggal Produksi" required />
+                <flux:input :value="$this->warehouse->name" label="Gudang Tujuan" readonly />
             </div>
-            <flux:textarea wire:model="notes" label="Catatan" rows="2" placeholder="Catatan production (opsional)" />
+            <flux:textarea wire:model="notes" label="Catatan" rows="2" placeholder="Catatan produksi (opsional)" />
 
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
@@ -66,7 +66,7 @@
             <div class="flex justify-end gap-2 border-t border-mine-200 pt-4 dark:border-mine-400">
                 <flux:button :href="route('productions.index')" wire:navigate variant="ghost">Batal</flux:button>
                 <flux:button type="submit" icon="check" variant="primary">
-                    {{ $production ? 'Simpan Perubahan' : 'Simpan Production' }}
+                    {{ $production ? 'Simpan Perubahan' : 'Simpan Produksi' }}
                 </flux:button>
             </div>
         </form>

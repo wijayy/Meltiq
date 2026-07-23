@@ -19,7 +19,7 @@ use RuntimeException;
 
 class ProductionCreate extends Component
 {
-    public string $title = 'Tambah Production';
+    public string $title = 'Tambah Produksi';
 
     public string $productionDate = '';
 
@@ -33,10 +33,10 @@ class ProductionCreate extends Component
     public function mount(?Production $production = null): void
     {
         if ($production?->exists) {
-            abort_unless($production->isEditable(), 403, 'Production sudah masuk stock snapshot dan tidak dapat diubah.');
+            abort_unless($production->isEditable(), 403, 'Produksi sudah masuk rekaman stok dan tidak dapat diubah.');
 
             $this->production = $production;
-            $this->title = 'Ubah Production';
+            $this->title = 'Ubah Produksi';
             $this->productionDate = $production->production_date->toDateString();
             $this->notes = $production->notes ?? '';
             $this->details = $production->details()
@@ -118,9 +118,9 @@ class ProductionCreate extends Component
             ],
             'details.*.qty' => ['required', 'integer', 'min:1'],
         ], attributes: [
-            'productionDate' => 'tanggal production',
+            'productionDate' => 'tanggal produksi',
             'details.*.product_id' => 'product',
-            'details.*.qty' => 'jumlah production',
+            'details.*.qty' => 'jumlah produksi',
         ]);
 
         $warehouse = $this->warehouse();
@@ -146,7 +146,7 @@ class ProductionCreate extends Component
             );
         }
 
-        session()->flash('success', $this->production ? 'Production berhasil diubah.' : 'Production berhasil disimpan dan stok warehouse telah diperbarui.');
+        session()->flash('success', $this->production ? 'Produksi berhasil diubah.' : 'Produksi berhasil disimpan dan stok gudang telah diperbarui.');
         $this->redirectRoute('productions.index', navigate: true);
     }
 

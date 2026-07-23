@@ -11,7 +11,7 @@ use Livewire\Component;
 
 class LocationCreate extends Component
 {
-    public string $title = 'Tambah Location';
+    public string $title = 'Tambah Lokasi';
 
     public ?int $locationId = null;
 
@@ -23,7 +23,7 @@ class LocationCreate extends Component
     public function openCreateModal(): void
     {
         $this->resetForm();
-        $this->title = 'Tambah Location';
+        $this->title = 'Tambah Lokasi';
         $this->dispatch('modal-show', name: 'location-create');
     }
 
@@ -33,7 +33,7 @@ class LocationCreate extends Component
         $location = Location::query()->active()->findOrFail($id);
 
         $this->resetValidation();
-        $this->title = 'Edit Location';
+        $this->title = 'Ubah Lokasi';
         $this->locationId = $location->id;
         $this->name = $location->name;
         $this->type = $location->type;
@@ -76,8 +76,8 @@ class LocationCreate extends Component
         );
 
         $message = $this->locationId
-            ? 'Location berhasil diperbarui.'
-            : 'Location berhasil ditambahkan.';
+            ? 'Lokasi berhasil diperbarui.'
+            : 'Lokasi berhasil ditambahkan.';
 
         $this->dispatch('modal-close', name: 'location-create');
         $this->dispatch('location-saved', message: $message);

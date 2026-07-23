@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
 
     <flux:sidebar-header>
@@ -6,7 +6,7 @@
 
         <x-slot name="button">
             <flux:button wire:click="createLocation" icon="plus" variant="primary" size="sm">
-                Tambah Location
+                Tambah Lokasi
             </flux:button>
         </x-slot>
     </flux:sidebar-header>
@@ -19,16 +19,16 @@
             </div>
             <div class="w-1/3">
                 <flux:select wire:model.live="status">
-                    <flux:select.option value="active">Active</flux:select.option>
-                    <flux:select.option value="nonactive">Nonactive</flux:select.option>
-                    <flux:select.option value="all">All</flux:select.option>
+                    <flux:select.option value="active">Aktif</flux:select.option>
+                    <flux:select.option value="nonactive">Tidak Aktif</flux:select.option>
+                    <flux:select.option value="all">Semua</flux:select.option>
                 </flux:select>
             </div>
         </div>
 
         <div class="flex min-w-3xl items-center gap-4 text-sm font-semibold">
             <div class="w-10">#</div>
-            <div class="w-1/2">Nama Location</div>
+            <div class="w-1/2">Nama Lokasi</div>
             <div class="w-1/4 text-center">Tipe</div>
             <div class="w-1/4 text-center">Aksi</div>
         </div>
@@ -44,12 +44,12 @@
                 <div class="flex w-1/4 justify-center gap-2">
                     <flux:button wire:click="editLocation({{ $location->id }})" icon="pencil-square"
                         variant="primary" size="sm">
-                        Edit
+                        Ubah
                     </flux:button>
                     @if (! $location->isActive)
                         <flux:button wire:click="restoreLocation({{ $location->id }})" icon="arrow-path"
                             variant="primary" size="sm">
-                            Restore
+                            Pulihkan
                         </flux:button>
                     @elseif (! in_array($location->id, $this->systemLocationIds, true))
                         <flux:button wire:click="openDeleteModal({{ $location->id }})" icon="trash"
@@ -61,7 +61,7 @@
             </div>
         @empty
             <div class="min-w-3xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400 dark:text-mine-100">
-                Location tidak ditemukan.
+                Lokasi tidak ditemukan.
             </div>
         @endforelse
 

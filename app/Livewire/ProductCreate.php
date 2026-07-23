@@ -13,7 +13,7 @@ use Livewire\Component;
 
 class ProductCreate extends Component
 {
-    public string $title = 'Tambah Product';
+    public string $title = 'Tambah Produk';
 
     public ?int $productId = null;
 
@@ -44,7 +44,7 @@ class ProductCreate extends Component
     public function openCreateModal(): void
     {
         $this->resetForm();
-        $this->title = 'Tambah Product';
+        $this->title = 'Tambah Produk';
         $this->dispatch('modal-show', name: 'product-create');
     }
 
@@ -54,7 +54,7 @@ class ProductCreate extends Component
         $product = Product::query()->active()->findOrFail($id);
 
         $this->resetValidation();
-        $this->title = 'Edit Product';
+        $this->title = 'Ubah Produk';
         $this->productId = $product->id;
         $this->categoryId = $product->category_id;
         $this->name = $product->name;
@@ -99,8 +99,8 @@ class ProductCreate extends Component
         );
 
         $message = $this->productId
-            ? 'Product berhasil diperbarui.'
-            : 'Product berhasil ditambahkan.';
+            ? 'Produk berhasil diperbarui.'
+            : 'Produk berhasil ditambahkan.';
 
         $this->dispatch('modal-close', name: 'product-create');
         $this->dispatch('product-saved', message: $message, categoryId: $product->category_id);

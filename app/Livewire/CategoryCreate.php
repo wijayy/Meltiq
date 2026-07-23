@@ -9,32 +9,34 @@ use Livewire\Component;
 
 class CategoryCreate extends Component
 {
-    public $title = "", $id = null;
+    public $title = '';
 
-    #[Validate("required|string|max:255")]
+    public $id = null;
+
+    #[Validate('required|string|max:255')]
     public $name = '';
 
     public function mount()
     {
-        $this->title = 'Create Category';
+        $this->title = 'Tambah Kategori';
     }
 
-    #[On("createCategory")]
+    #[On('createCategory')]
     public function openCreateModal()
     {
-        $this->title = "Create New Category";
+        $this->title = 'Tambah Kategori Baru';
         $this->reset(['name', 'id']);
-        $this->dispatch('modal-show', name: "category-create");
+        $this->dispatch('modal-show', name: 'category-create');
     }
 
-    #[On("editCategory")]
+    #[On('editCategory')]
     public function openEditModal($id)
     {
         $category = Category::query()->active()->findOrFail($id);
-        $this->title = "Edit Category";
+        $this->title = 'Ubah Kategori';
         $this->name = $category->name;
         $this->id = $category->id;
-        $this->dispatch('modal-show', name: "category-create");
+        $this->dispatch('modal-show', name: 'category-create');
     }
 
     public function save()
@@ -42,7 +44,7 @@ class CategoryCreate extends Component
         $validated = $this->validate();
         Category::updateOrCreate(['id' => $this->id], $validated);
 
-        $message = $this->id ? 'Category Updated' : 'New Category Created';
+        $message = $this->id ? 'Kategori berhasil diperbarui.' : 'Kategori baru berhasil dibuat.';
         session()->put('success', $message);
 
         $this->reset(['name', 'id']);

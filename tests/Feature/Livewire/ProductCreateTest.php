@@ -30,7 +30,7 @@ it('opens the create modal with clean defaults', function () {
         ->set('name', 'Old name')
         ->set('isActive', false)
         ->call('openCreateModal')
-        ->assertSet('title', 'Tambah Product')
+        ->assertSet('title', 'Tambah Produk')
         ->assertSet('productId', null)
         ->assertSet('name', '')
         ->assertSet('costPrice', 0)
@@ -45,7 +45,7 @@ it('loads an existing product into the edit modal', function () {
 
     Livewire::test(ProductCreate::class)
         ->call('openEditModal', $product->id)
-        ->assertSet('title', 'Edit Product')
+        ->assertSet('title', 'Ubah Produk')
         ->assertSet('productId', $product->id)
         ->assertSet('categoryId', $product->category_id)
         ->assertSet('name', $product->name)
@@ -70,7 +70,7 @@ it('creates a product and dispatches refresh events', function () {
     $component->call('save')
         ->assertHasNoErrors()
         ->assertDispatched('modal-close', name: 'product-create')
-        ->assertDispatched('product-saved', message: 'Product berhasil ditambahkan.', categoryId: $category->id)
+        ->assertDispatched('product-saved', message: 'Produk berhasil ditambahkan.', categoryId: $category->id)
         ->assertSet('productId', null)
         ->assertSet('name', '');
 
@@ -91,7 +91,7 @@ it('updates a product without rejecting its current sku', function () {
         ->set('salePrice', 18000)
         ->call('save')
         ->assertHasNoErrors()
-        ->assertDispatched('product-saved', message: 'Product berhasil diperbarui.', categoryId: $product->category_id);
+        ->assertDispatched('product-saved', message: 'Produk berhasil diperbarui.', categoryId: $product->category_id);
 
     expect($product->fresh()->name)->toBe('Keripik Pisang Premium')
         ->and($product->fresh()->salePrice)->toBe(18000);

@@ -19,10 +19,14 @@ use RuntimeException;
 
 class VisitCreate extends Component
 {
-    public string $title = 'Tambah Visit';
+    public string $title = 'Tambah Pengiriman';
+
     public ?Visit $visit = null;
+
     public string $visitDate = '';
+
     public string $locationId = '';
+
     public string $notes = '';
 
     /** @var array<int, array{product_id: string|int, warehouseStock: int, stockBefore: int, physicalStock: string|int, returnedQty: string|int, expiredQty: string|int, newDeliveryQty: string|int, isOutletStock: bool}> */
@@ -31,13 +35,13 @@ class VisitCreate extends Component
     public function mount(?Visit $visit = null): void
     {
         if ($visit?->exists) {
-            abort_unless($visit->isEditable(), 403, 'Visit sudah masuk stock snapshot dan tidak dapat diubah.');
+            abort_unless($visit->isEditable(), 403, 'Pengiriman sudah masuk rekaman stok dan tidak dapat diubah.');
             $this->visit = $visit;
-            $this->title = 'Ubah Visit';
+            $this->title = 'Ubah Pengiriman';
             $this->visitDate = $visit->visit_date->toDateString();
             $this->locationId = (string) $visit->location_id;
             $this->notes = $visit->notes ?? '';
-            $this->details = $visit->details()->get()->map(fn(VisitDetail $detail): array => [
+            $this->details = $visit->details()->get()->map(fn (VisitDetail $detail): array => [
                 'product_id' => $detail->product_id,
                 'warehouseStock' => $this->warehouseStockFor($detail->product_id),
                 'stockBefore' => $detail->stockBefore,
@@ -47,6 +51,7 @@ class VisitCreate extends Component
                 'newDeliveryQty' => $detail->newDeliveryQty,
                 'isOutletStock' => $detail->stockBefore > 0,
             ])->all();
+
             return;
         }
 
@@ -90,7 +95,7 @@ class VisitCreate extends Component
         $this->loadOutletProducts();
     }
 
-    public function updatedDetails(mixed $value, string|NULL $key): void
+    public function updatedDetails(mixed $value, ?string $key): void
     {
         if (str_ends_with($key, '.product_id')) {
             $index = (int) explode('.', $key)[0];
@@ -100,11 +105,12 @@ class VisitCreate extends Component
                 $productId = (int) $detail['product_id'];
                 $duplicate = collect($this->details)
                     ->except([$index])
-                    ->contains(fn(array $row): bool => (int) $row['product_id'] === $productId);
+                    ->contains(fn (array $row): bool => (int) $row['product_id'] === $productId);
 
                 if ($productId > 0 && $duplicate) {
                     $this->details[$index] = [...$detail, 'product_id' => '', 'warehouseStock' => 0];
-                    $this->addError("details.$index.product_id", 'Produk sudah ada di form Visit.');
+                    $this->addError("details.$index.product_id", 'Produk sudah ada di formulir kunjungan.');
+
                     return;
                 }
 
@@ -124,7 +130,7 @@ class VisitCreate extends Component
     {
         $validated = $this->validate([
             'visitDate' => ['required', 'date', 'before_or_equal:today'],
-            'locationId' => ['required', 'integer', Rule::exists('locations', 'id')->where(fn($query) => $query->where('type', 'outlet')->where('isActive', true))],
+            'locationId' => ['required', 'integer', Rule::exists('locations', 'id')->where(fn ($query) => $query->where('type', 'outlet')->where('isActive', true))],
             'notes' => ['nullable', 'string', 'max:2000'],
             'details' => ['required', 'array', 'min:1'],
             'details.*.product_id' => ['required', 'integer', 'distinct', Rule::exists('products', 'id')->where('isActive', true)],
@@ -137,7 +143,7 @@ class VisitCreate extends Component
 
         /** @var User $user */
         $user = auth()->user();
-        $detailPayloads = array_map(fn(array $detail): array => [
+        $detailPayloads = array_map(fn (array $detail): array => [
             'product_id' => (int) $detail['product_id'],
             'stockBefore' => (int) $detail['stockBefore'],
             'physicalStock' => (int) $detail['physicalStock'],
@@ -157,7 +163,7 @@ class VisitCreate extends Component
             visit: $this->visit,
         );
 
-        session()->flash('success', $this->visit ? 'Visit berhasil diubah.' : 'Visit berhasil disimpan.');
+        session()->flash('success', $this->visit ? 'Pengiriman berhasil diubah.' : 'Pengiriman berhasil disimpan.');
         $this->redirectRoute('visits.index', navigate: true);
     }
 
@@ -167,6 +173,7 @@ class VisitCreate extends Component
 
         if ($locationId === 0) {
             $this->details = [];
+
             return;
         }
 
@@ -180,7 +187,7 @@ class VisitCreate extends Component
             ->where('stock', '>', 0)
             ->orderBy('product_id')
             ->get(['product_id', 'stock'])
-            ->map(fn(CurrentStock $stock): array => [
+            ->map(fn (CurrentStock $stock): array => [
                 'product_id' => $stock->product_id,
                 'warehouseStock' => (int) ($warehouseStocks[$stock->product_id] ?? 0),
                 'stockBefore' => $stock->stock,
@@ -206,6 +213,7 @@ class VisitCreate extends Component
     {
         $id = Setting::query()->where('key', $key)->value('value');
         $location = Location::query()->active()->where('type', $type)->find((int) $id);
+
         return $location ?? throw new RuntimeException('Konfigurasi location sistem belum lengkap.');
     }
 

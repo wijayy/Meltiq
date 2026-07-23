@@ -28,18 +28,18 @@ class BuildStockMovementExcel
     {
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Stock Movement');
-        $mineColor = 'E43A19';
+        $sheet->setTitle('Pergerakan Stok');
+        $mineColor = '4E2011';
         $sheet->mergeCells('A1:H1');
-        $sheet->setCellValue('A1', 'LAPORAN STOCK MOVEMENT');
+        $sheet->setCellValue('A1', 'LAPORAN PERGERAKAN STOK');
         $sheet->fromArray([
-            ['Period', $filters['period_begin'].' s/d '.$filters['period_end']],
-            ['Product', $filters['product']],
-            ['Location', $filters['location']],
-            ['Diexport Pada', $filters['exported_at']],
-            ['Jumlah Movement', $movements->count()],
+            ['Periode', $filters['period_begin'].' s/d '.$filters['period_end']],
+            ['Produk', $filters['product']],
+            ['Lokasi', $filters['location']],
+            ['Diekspor Pada', $filters['exported_at']],
+            ['Jumlah Pergerakan', $movements->count()],
         ], null, 'B3');
-        $sheet->fromArray(['No', 'Tanggal', 'Product', 'Tipe', 'Dari', 'Ke', 'Qty', 'Referensi'], null, 'A9');
+        $sheet->fromArray(['No', 'Tanggal', 'Produk', 'Tipe', 'Dari', 'Ke', 'Jumlah', 'Referensi'], null, 'A9');
 
         foreach ($movements as $index => $movement) {
             $sheet->fromArray([
@@ -62,9 +62,9 @@ class BuildStockMovementExcel
         $lastSummaryColumnIndex = max(3, 2 + $summaryValueColumnCount);
         $lastSummaryColumn = Coordinate::stringFromColumnIndex($lastSummaryColumnIndex);
         $sheet->mergeCells('B'.$summaryTitleRow.':'.$lastSummaryColumn.$summaryTitleRow);
-        $sheet->setCellValue('B'.$summaryTitleRow, 'RANGKUMAN MOVEMENT PER PRODUCT DAN LOCATION');
+        $sheet->setCellValue('B'.$summaryTitleRow, 'RANGKUMAN PERGERAKAN PER PRODUK DAN LOKASI');
         $sheet->mergeCells('B'.$summaryHeaderRow.':B'.$summarySubHeaderRow);
-        $sheet->setCellValue('B'.$summaryHeaderRow, 'Product');
+        $sheet->setCellValue('B'.$summaryHeaderRow, 'Produk');
 
         $summaryColumn = 3;
         foreach ($locations as $location) {
@@ -137,7 +137,7 @@ class BuildStockMovementExcel
 
         $stream = fopen('php://temp', 'w+b');
         if ($stream === false) {
-            throw new RuntimeException('Gagal menyiapkan file export stock movement.');
+            throw new RuntimeException('Gagal menyiapkan file ekspor pergerakan stok.');
         }
 
         (new Xlsx($spreadsheet))->save($stream);
@@ -147,7 +147,7 @@ class BuildStockMovementExcel
         $spreadsheet->disconnectWorksheets();
 
         if ($contents === false) {
-            throw new RuntimeException('Gagal membaca file export stock movement.');
+            throw new RuntimeException('Gagal membaca file ekspor pergerakan stok.');
         }
 
         return $contents;

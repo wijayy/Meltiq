@@ -1,0 +1,43 @@
+<?php
+
+return [
+    'array' => ':attribute harus berupa daftar.',
+    'boolean' => ':attribute harus bernilai benar atau salah.',
+    'confirmed' => 'Konfirmasi :attribute tidak cocok.',
+    'date' => ':attribute harus berupa tanggal yang valid.',
+    'distinct' => ':attribute memiliki nilai yang sama.',
+    'email' => ':attribute harus berupa alamat email yang valid.',
+    'exists' => ':attribute yang dipilih tidak valid.',
+    'in' => ':attribute yang dipilih tidak valid.',
+    'integer' => ':attribute harus berupa bilangan bulat.',
+    'lowercase' => ':attribute harus menggunakan huruf kecil.',
+    'max' => [
+        'array' => ':attribute maksimal berisi :max data.',
+        'numeric' => ':attribute maksimal bernilai :max.',
+        'string' => ':attribute maksimal terdiri dari :max karakter.',
+    ],
+    'min' => [
+        'array' => ':attribute minimal berisi :min data.',
+        'numeric' => ':attribute minimal bernilai :min.',
+        'string' => ':attribute minimal terdiri dari :min karakter.',
+    ],
+    'numeric' => ':attribute harus berupa angka.',
+    'required' => ':attribute wajib diisi.',
+    'same' => ':attribute harus sama dengan :other.',
+    'string' => ':attribute harus berupa teks.',
+    'unique' => ':attribute sudah digunakan.',
+    'attributes' => [
+        'name' => 'nama',
+        'email' => 'email',
+        'password' => 'kata sandi',
+        'passwordConfirmation' => 'konfirmasi kata sandi',
+        'categoryId' => 'kategori',
+        'locationId' => 'lokasi',
+        'product_id' => 'produk',
+        'productionDate' => 'tanggal produksi',
+        'visitDate' => 'tanggal kunjungan',
+        'costPrice' => 'harga modal',
+        'transferPrice' => 'harga transfer',
+        'salePrice' => 'harga jual',
+    ],
+];

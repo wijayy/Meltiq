@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StockMovementIndex extends Component
 {
-    public string $title = 'Stock Movement';
+    public string $title = 'Pergerakan Stok';
 
     #[Url(as: 'period-begin', except: '')]
     public string $periodBegin = '';
@@ -169,8 +169,8 @@ class StockMovementIndex extends Component
             [
                 'period_begin' => $this->periodBegin !== '' ? Carbon::parse($this->periodBegin)->format('d/m/Y') : 'Awal',
                 'period_end' => $this->periodEnd !== '' ? Carbon::parse($this->periodEnd)->format('d/m/Y') : 'Sekarang',
-                'product' => $product ? $product->name.' — '.$product->sku : 'Semua Product',
-                'location' => $location ? $location->name.' ('.ucfirst($location->type).')' : 'Semua Location',
+                'product' => $product ? $product->name.' — '.$product->sku : 'Semua Produk',
+                'location' => $location ? $location->name.' ('.ucfirst($location->type).')' : 'Semua Lokasi',
                 'exported_at' => now()->format('d/m/Y H:i:s'),
             ],
         );

@@ -5,7 +5,7 @@
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-mine-100/60 dark:bg-neutral-800">
+<body class="min-h-screen overflow-hidden bg-mine-100/60 dark:bg-neutral-800">
     <flux:sidebar sticky collapsible="mobile"
         class="border-e border-zinc-200 bg-mine-100 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.header>
@@ -29,16 +29,6 @@
                     {{ __('Locations') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>
-            <flux:sidebar.group :heading="__('Konsiyasi')" class="grid">
-                <flux:sidebar.item icon="archive-box-arrow-down" :href="route('productions.index')"
-                    :current="request()->routeIs('productions.*')" wire:navigate>
-                    {{ __('Production') }}
-                </flux:sidebar.item>
-                <flux:sidebar.item icon="truck" :href="route('visits.index')"
-                    :current="request()->routeIs('visits.*')" wire:navigate>
-                    {{ __('Visits') }}
-                </flux:sidebar.item>
-            </flux:sidebar.group>
             <flux:sidebar.group :heading="__('Stok')" class="grid">
                 <flux:sidebar.item icon="circle-stack" :href="route('stocks.index')"
                     :current="request()->routeIs('stocks.index')" wire:navigate>
@@ -49,6 +39,17 @@
                     {{ __('Stock Movement') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>
+            <flux:sidebar.group :heading="__('Konsiyasi')" class="grid">
+                <flux:sidebar.item icon="archive-box-arrow-down" :href="route('productions.index')"
+                    :current="request()->routeIs('productions.*')" wire:navigate>
+                    {{ __('Production') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="truck" :href="route('visits.index')"
+                    :current="request()->routeIs('visits.*')" wire:navigate>
+                    {{ __('Visits') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
+
             <flux:sidebar.group :heading="__('Admin')" class="grid">
                 <flux:sidebar.item icon="users" :href="route('users.index')"
                     :current="request()->routeIs('users.*')" wire:navigate>
@@ -112,6 +113,8 @@
     </flux:header>
 
     {{ $slot }}
+
+    <flux:sidebar-footer />
 
     @persist('toast')
         <flux:toast.group>

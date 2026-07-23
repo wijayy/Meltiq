@@ -7,7 +7,7 @@ use Livewire\Livewire;
 it('renders successfully', function () {
     Livewire::test(CategoryCreate::class)
         ->assertSuccessful()
-        ->assertSet('title', 'Create Category');
+        ->assertSet('title', 'Tambah Kategori');
 });
 
 it('opens the create modal and resets the form', function () {
@@ -15,7 +15,7 @@ it('opens the create modal and resets the form', function () {
         ->set('id', 99)
         ->set('name', 'Old category')
         ->call('openCreateModal')
-        ->assertSet('title', 'Create New Category')
+        ->assertSet('title', 'Tambah Kategori Baru')
         ->assertSet('id', null)
         ->assertSet('name', '')
         ->assertDispatched('modal-show', name: 'category-create');
@@ -26,7 +26,7 @@ it('loads an existing category into the edit modal', function () {
 
     Livewire::test(CategoryCreate::class)
         ->call('openEditModal', $category->id)
-        ->assertSet('title', 'Edit Category')
+        ->assertSet('title', 'Ubah Kategori')
         ->assertSet('id', $category->id)
         ->assertSet('name', 'Beverages')
         ->assertDispatched('modal-show', name: 'category-create');
@@ -37,7 +37,7 @@ it('creates a category and dispatches refresh events', function () {
         ->set('name', 'Beverages')
         ->call('save')
         ->assertHasNoErrors()
-        ->assertSessionHas('success', 'New Category Created')
+        ->assertSessionHas('success', 'Kategori baru berhasil dibuat.')
         ->assertDispatched('modal-close', name: 'category-create')
         ->assertDispatched('updateCategoryList')
         ->assertDispatched('$refresh')
@@ -55,7 +55,7 @@ it('updates a category', function () {
         ->set('name', 'Premium Snacks')
         ->call('save')
         ->assertHasNoErrors()
-        ->assertSessionHas('success', 'Category Updated')
+        ->assertSessionHas('success', 'Kategori berhasil diperbarui.')
         ->assertDispatched('updateCategoryList');
 
     expect($category->fresh()->name)->toBe('Premium Snacks');

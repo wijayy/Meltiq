@@ -1,4 +1,4 @@
-<div class="bg-white dark:bg-neutral-700 py-2 px-4 flex justify-between items-center">
+<header class="flex shrink-0 items-center justify-between bg-white px-4 py-2 dark:bg-neutral-700">
     <div class="">
         <h1 class="text-lg font-bold text-mine-200 dark:text-mine-100">{{ $slot }}</h1>
         @if (session()->has('success'))
@@ -15,4 +15,4 @@
     <div class="flex gap-2">
         {{ $button ?? '' }}
     </div>
-</div>
+</header>

@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
 
     <flux:sidebar-header>
@@ -7,7 +7,7 @@
         <x-slot name="button">
             <flux:button wire:click="exportExcel" wire:loading.attr="disabled" wire:target="exportExcel"
                 icon="arrow-down-tray" variant="primary" size="sm">
-                <span wire:loading.remove wire:target="exportExcel">Export Excel</span>
+                <span wire:loading.remove wire:target="exportExcel">Ekspor Excel</span>
                 <span wire:loading wire:target="exportExcel">Membuat Excel...</span>
             </flux:button>
         </x-slot>
@@ -15,11 +15,11 @@
 
     <flux:sidebar-content>
         <div class="flex min-w-4xl flex-wrap items-end gap-4">
-            <div class="w-full sm:w-48"><flux:input wire:model.live="periodBegin" type="date" label="Period Begin" /></div>
-            <div class="w-full sm:w-48"><flux:input wire:model.live="periodEnd" type="date" label="Period End" /></div>
+            <div class="w-full sm:w-48"><flux:input wire:model.live="periodBegin" type="date" label="Awal Periode" /></div>
+            <div class="w-full sm:w-48"><flux:input wire:model.live="periodEnd" type="date" label="Akhir Periode" /></div>
             <div class="w-full sm:w-64">
-                <flux:select wire:model.live="productSlug" label="Product">
-                    <flux:select.option value="">Semua Product</flux:select.option>
+                <flux:select wire:model.live="productSlug" label="Produk">
+                    <flux:select.option value="">Semua Produk</flux:select.option>
                     @foreach ($this->products as $product)
                         <flux:select.option wire:key="movement-product-{{ $product->id }}" value="{{ $product->slug }}">
                             {{ $product->name }} — {{ $product->sku }}
@@ -28,8 +28,8 @@
                 </flux:select>
             </div>
             <div class="w-full sm:w-64">
-                <flux:select wire:model.live="locationSlug" label="Location">
-                    <flux:select.option value="">Semua Location</flux:select.option>
+                <flux:select wire:model.live="locationSlug" label="Lokasi">
+                    <flux:select.option value="">Semua Lokasi</flux:select.option>
                     @foreach ($this->locations as $location)
                         <flux:select.option wire:key="movement-location-{{ $location->id }}" value="{{ $location->slug }}">
                             {{ $location->name }}
@@ -40,7 +40,7 @@
         </div>
 
         <div class="flex min-w-6xl items-center gap-4 text-sm font-semibold">
-            <div class="w-10">#</div><div class="w-36">Tanggal</div><div class="w-64">Product</div>
+            <div class="w-10">#</div><div class="w-36">Tanggal</div><div class="w-64">Produk</div>
             <div class="w-28 text-center">Tipe</div><div class="w-48">Dari</div><div class="w-48">Ke</div>
             <div class="w-28 text-right">Qty</div><div class="w-40">Referensi</div>
         </div>
@@ -65,12 +65,12 @@
             </div>
         @empty
             <div class="min-w-4xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400 dark:text-mine-100">
-                Stock movement tidak ditemukan pada filter yang dipilih.
+                Pergerakan stok tidak ditemukan pada filter yang dipilih.
             </div>
         @endforelse
 
         <div class="pt-6">
-            <flux:heading size="lg" class="text-mine-400 dark:text-mine-100">Rangkuman Movement</flux:heading>
+            <flux:heading size="lg" class="text-mine-400 dark:text-mine-100">Rangkuman Pergerakan</flux:heading>
             <flux:text class="mt-1">Stok bertambah dan berkurang ditampilkan terpisah untuk setiap product dan location.</flux:text>
         </div>
 
@@ -78,7 +78,7 @@
             <table class="min-w-full border-collapse text-sm">
                 <thead>
                     <tr>
-                        <th rowspan="2" class="sticky left-0 min-w-64 border border-mine-200 bg-white p-3 text-left dark:border-mine-400 dark:bg-neutral-700">Product</th>
+                        <th rowspan="2" class="sticky left-0 min-w-64 border border-mine-200 bg-white p-3 text-left dark:border-mine-400 dark:bg-neutral-700">Produk</th>
                         @foreach ($this->summaryLocations as $location)
                             <th colspan="{{ $location->type === 'virtual' ? 1 : 2 }}" class="{{ $location->type === 'virtual' ? 'min-w-32' : 'min-w-64' }} border border-mine-200 p-3 text-center dark:border-mine-400">{{ $location->name }}</th>
                         @endforeach

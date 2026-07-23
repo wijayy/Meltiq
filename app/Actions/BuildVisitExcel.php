@@ -22,18 +22,18 @@ class BuildVisitExcel
     {
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Visit');
+        $sheet->setTitle('Pengiriman');
         $sheet->mergeCells('A1:J1');
-        $sheet->setCellValue('A1', 'LAPORAN VISIT');
+        $sheet->setCellValue('A1', 'LAPORAN PENGIRIMAN');
         $sheet->fromArray([
-            ['Nomor Visit', $filters['visit_no']],
+            ['Nomor Pengiriman', $filters['visit_no']],
             ['Outlet', $filters['location']],
-            ['Period', $filters['period_begin'].' s/d '.$filters['period_end']],
-            ['Diexport Pada', $filters['exported_at']],
-            ['Jumlah Visit', $visits->count()],
+            ['Periode', $filters['period_begin'].' s/d '.$filters['period_end']],
+            ['Diekspor Pada', $filters['exported_at']],
+            ['Jumlah Pengiriman', $visits->count()],
         ], null, 'A3');
 
-        $mineColor = 'E43A19';
+        $mineColor = '4E2011';
         $sheet->getStyle('A1:J1')->applyFromArray([
             'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => 'FFFFFF']],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => $mineColor]],
@@ -44,7 +44,7 @@ class BuildVisitExcel
         $row = 9;
 
         foreach ($visits as $visit) {
-            $sheet->fromArray(['Nomor Visit', 'Tanggal', 'Outlet', 'Created By', 'Catatan', '', '', '', '', 'Total Delivery'], null, 'A'.$row);
+            $sheet->fromArray(['Nomor Pengiriman', 'Tanggal', 'Outlet', 'Dibuat Oleh', 'Catatan', '', '', '', '', 'Total Pengiriman'], null, 'A'.$row);
             $sheet->fromArray([
                 $visit->visit_no,
                 $visit->visit_date->format('d/m/Y'),
@@ -63,12 +63,12 @@ class BuildVisitExcel
 
             $detailHeaderRow = $row + 3;
             $sheet->mergeCells('A'.$detailHeaderRow.':J'.$detailHeaderRow);
-            $sheet->setCellValue('A'.$detailHeaderRow, 'DETAIL PRODUCT');
+            $sheet->setCellValue('A'.$detailHeaderRow, 'DETAIL PRODUK');
             $sheet->getStyle('A'.$detailHeaderRow.':J'.$detailHeaderRow)->applyFromArray([
                 'font' => ['bold' => true],
                 'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'FCE4DE']],
             ]);
-            $sheet->fromArray(['No', 'Product', 'SKU', 'Stock Before', 'Physical Stock', 'Terjual', 'Returned', 'Expired', 'New Delivery', 'Stock Akhir'], null, 'A'.($detailHeaderRow + 1));
+            $sheet->fromArray(['No', 'Produk', 'SKU', 'Stok Sebelum', 'Stok Fisik', 'Terjual', 'Dikembalikan', 'Kedaluwarsa', 'Pengiriman Baru', 'Stok Akhir'], null, 'A'.($detailHeaderRow + 1));
             $sheet->getStyle('A'.($detailHeaderRow + 1).':J'.($detailHeaderRow + 1))->getFont()->setBold(true);
 
             $detailRow = $detailHeaderRow + 2;
@@ -105,7 +105,7 @@ class BuildVisitExcel
         $stream = fopen('php://temp', 'w+b');
 
         if ($stream === false) {
-            throw new RuntimeException('Gagal menyiapkan file export visit.');
+            throw new RuntimeException('Gagal menyiapkan file ekspor pengiriman.');
         }
 
         (new Xlsx($spreadsheet))->save($stream);
@@ -115,7 +115,7 @@ class BuildVisitExcel
         $spreadsheet->disconnectWorksheets();
 
         if ($contents === false) {
-            throw new RuntimeException('Gagal membaca file export visit.');
+            throw new RuntimeException('Gagal membaca file ekspor pengiriman.');
         }
 
         return $contents;

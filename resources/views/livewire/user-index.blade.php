@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
 
     <flux:sidebar-header>
@@ -6,7 +6,7 @@
 
         <x-slot name="button">
             <flux:button wire:click="openCreateModal" icon="plus" variant="primary" size="sm">
-                Tambah User
+                Tambah Pengguna
             </flux:button>
         </x-slot>
     </flux:sidebar-header>
@@ -40,12 +40,12 @@
                 </div>
                 <div class="flex w-24 justify-center">
                     <flux:button wire:click="openEditModal({{ $user->id }})" icon="pencil-square"
-                        variant="primary" size="sm">Edit</flux:button>
+                        variant="primary" size="sm">Ubah</flux:button>
                 </div>
             </div>
         @empty
             <div class="min-w-3xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400 dark:text-mine-100">
-                User tidak ditemukan.
+                Pengguna tidak ditemukan.
             </div>
         @endforelse
 
@@ -53,13 +53,13 @@
             <form wire:submit="save" class="space-y-5">
                 <div>
                     <flux:heading size="lg" class="text-mine-400 dark:text-mine-100">
-                        {{ $userId ? 'Edit User' : 'Tambah User' }}
+                        {{ $userId ? 'Ubah Pengguna' : 'Tambah Pengguna' }}
                     </flux:heading>
                     <flux:text class="mt-1 text-mine-300 dark:text-mine-200">
                         @if ($userId)
                             Kosongkan password jika tidak ingin mengubahnya. Perubahan email memerlukan verifikasi ulang.
                         @else
-                            User akan menerima email verifikasi sebelum dapat mengakses sistem.
+                            Pengguna akan menerima email verifikasi sebelum dapat mengakses sistem.
                         @endif
                     </flux:text>
                 </div>

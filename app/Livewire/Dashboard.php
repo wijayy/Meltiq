@@ -16,7 +16,7 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    public string $title = 'Dashboard';
+    public string $title = 'Dasbor';
 
     /** @return array{products: int, locations: int, total_stock: int, users: int, movements_today: int} */
     #[Computed]

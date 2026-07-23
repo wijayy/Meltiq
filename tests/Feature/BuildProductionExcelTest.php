@@ -32,13 +32,15 @@ it('builds production blocks followed by their product details', function () {
     $sheet = IOFactory::load($path)->getActiveSheet();
 
     expect(substr($contents, 0, 2))->toBe('PK')
-        ->and($sheet->getCell('A1')->getValue())->toBe('LAPORAN PRODUCTION')
+        ->and($sheet->getCell('A1')->getValue())->toBe('LAPORAN PRODUKSI')
         ->and($sheet->getCell('B3')->getValue())->toBe('PRD20260717')
         ->and($sheet->getCell('B4')->getValue())->toBe('01/07/2026 s/d 31/07/2026')
         ->and($sheet->getCell('A10')->getValue())->toBe('PRD20260717001')
         ->and($sheet->getCell('C10')->getValue())->toBe('Admin Gudang')
         ->and($sheet->getCell('E10')->getValue())->toBe(15)
-        ->and($sheet->getCell('A12')->getValue())->toBe('DETAIL PRODUCT')
+        ->and($sheet->getCell('A12')->getValue())->toBe('DETAIL PRODUK')
+        ->and($sheet->getStyle('A1')->getFill()->getStartColor()->getRGB())->toBe('4E2011')
+        ->and($sheet->getStyle('A1')->getFont()->getColor()->getRGB())->toBe('FFFFFF')
         ->and($sheet->getCell('B14')->getValue())->toBe($products[0]->name)
         ->and($sheet->getCell('D15')->getValue())->toBe(5);
 

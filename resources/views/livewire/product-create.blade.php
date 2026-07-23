@@ -9,7 +9,7 @@
             </div>
 
             <div class="grid gap-4 md:grid-cols-2">
-                <flux:select wire:model="categoryId" label="Category" placeholder="Pilih category" required>
+                <flux:select wire:model="categoryId" label="Kategori" placeholder="Pilih kategori" required>
                     @foreach ($this->categories as $category)
                         <flux:select.option wire:key="product-category-{{ $category->id }}" value="{{ $category->id }}">
                             {{ $category->name }}
@@ -20,7 +20,7 @@
                 <flux:input wire:model="sku" label="SKU" placeholder="Contoh: SKU-001" required />
 
                 <div class="md:col-span-2">
-                    <flux:input wire:model="name" label="Nama Product" placeholder="Masukkan nama product" required />
+                    <flux:input wire:model="name" label="Nama Produk" placeholder="Masukkan nama produk" required />
                 </div>
 
                 <flux:input wire:model="costPrice" type="number" min="0" label="Harga Modal" required />
@@ -28,7 +28,7 @@
                 <flux:input wire:model="salePrice" type="number" min="0" label="Harga Jual" required />
 
                 <div class="flex items-end pb-2">
-                    <flux:switch wire:model="isActive" label="Product Aktif" />
+                    <flux:switch wire:model="isActive" label="Produk Aktif" />
                 </div>
 
                 <div class="md:col-span-2">

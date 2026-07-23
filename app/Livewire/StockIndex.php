@@ -2,8 +2,8 @@
 
 namespace App\Livewire;
 
-use App\Actions\GetStockReport;
 use App\Actions\BuildStockExcel;
+use App\Actions\GetStockSummaryReport;
 use App\Models\Location;
 use App\Models\Product;
 use Carbon\Carbon;
@@ -13,18 +13,18 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
 
 class StockIndex extends Component
 {
-    public string $title = 'Stock';
+    public string $title = 'Laporan Konsinyasi';
 
     #[Url(as: 'datetime', except: '')]
     public string $selectedDateTime = '';
@@ -35,7 +35,21 @@ class StockIndex extends Component
     #[Url(as: 'location', except: '')]
     public string $locationSlug = '';
 
-    /** @return Collection<int, array{product_id: int, product_name: string, sku: string, location_id: int, location_name: string, location_type: string, stock: int}> */
+    /**
+     * @return Collection<int, array{
+     *     product_id: int,
+     *     product_name: string,
+     *     sku: string,
+     *     location_id: int,
+     *     location_name: string,
+     *     location_type: string,
+     *     physical: int,
+     *     sales: int,
+     *     returned: int,
+     *     expired: int,
+     *     total: int
+     * }>
+     */
     #[Computed]
     public function stocks(): Collection
     {
@@ -55,7 +69,7 @@ class StockIndex extends Component
             return collect();
         }
 
-        return app(GetStockReport::class)->handle(
+        return app(GetStockSummaryReport::class)->handle(
             at: $at,
             productId: $productId !== null ? (int) $productId : null,
             locationId: $locationId !== null ? (int) $locationId : null,
@@ -113,8 +127,8 @@ class StockIndex extends Component
             : 'Saat ini ('.now()->format('d/m/Y H:i').')';
         $contents = app(BuildStockExcel::class)->handle($this->stocks(), [
             'stock_time' => $stockTime,
-            'product' => $product ? $product->name.' — '.$product->sku : 'Semua Product',
-            'location' => $location ? $location->name.' ('.ucfirst($location->type).')' : 'Semua Location',
+            'product' => $product ? $product->name.' — '.$product->sku : 'Semua Produk',
+            'location' => $location ? $location->name.' ('.$this->locationTypeLabel($location->type).')' : 'Semua Lokasi',
             'exported_at' => now()->format('d/m/Y H:i:s'),
         ]);
         $filename = 'stock-report-'.now()->format('Ymd-His').'.xlsx';
@@ -126,6 +140,16 @@ class StockIndex extends Component
             $filename,
             ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
         );
+    }
+
+    public function locationTypeLabel(string $type): string
+    {
+        return match ($type) {
+            'warehouse' => 'Gudang',
+            'outlet' => 'Outlet',
+            'virtual' => 'Virtual',
+            default => $type,
+        };
     }
 
     public function render(): View
