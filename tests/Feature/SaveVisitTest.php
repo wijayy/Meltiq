@@ -87,7 +87,7 @@ it('rejects visit changes after a related snapshot', function () {
 
     expect(fn () => app(SaveVisit::class)->handle($user, $outlet, $warehouse, $expiredLocation, now()->toDateString(), null, [[
         'product_id' => $product->id, 'stockBefore' => 10, 'physicalStock' => 9, 'returnedQty' => 0, 'expiredQty' => 0, 'newDeliveryQty' => 0,
-    ]], $visit))->toThrow(LogicException::class, 'stock snapshot');
+    ]], $visit))->toThrow(LogicException::class, 'sudah masuk rekaman stok');
 });
 
 it('rejects inconsistent physical returned and expired quantities', function () {

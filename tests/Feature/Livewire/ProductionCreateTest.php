@@ -143,5 +143,7 @@ it('rejects quantities below one', function () {
 
 it('requires a configured active warehouse', function () {
     Livewire::test(ProductionCreate::class)
-        ->assertStatus(500);
+        ->assertSuccessful()
+        ->assertSee('Default warehouse belum dikonfigurasi atau tidak aktif.')
+        ->assertSee('Belum dikonfigurasi');
 });

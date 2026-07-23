@@ -70,7 +70,7 @@ it('rejects production updates after its stock has been captured', function () {
         now()->toDateString(),
         null,
         [['product_id' => $product->id, 'qty' => 5]],
-    ))->toThrow(\LogicException::class, 'sudah masuk stock snapshot');
+    ))->toThrow(LogicException::class, 'sudah masuk rekaman stok');
 
     expect(CurrentStock::query()->whereBelongsTo($product)->whereBelongsTo($warehouse)->value('stock'))->toBe(10)
         ->and($production->refresh()->details()->value('qty'))->toBe(10);

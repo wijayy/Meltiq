@@ -20,7 +20,7 @@ it('searches production by production number', function () {
     $notMatched = Production::factory()->create(['production_no' => 'PRD20260718001']);
 
     Livewire::test(ProductionIndex::class)
-        ->set('search', '20260717')
+        ->set('productionNo', '20260717')
         ->assertSee($matched->production_no)
         ->assertDontSee($notMatched->production_no);
 });

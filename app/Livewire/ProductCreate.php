@@ -25,11 +25,11 @@ class ProductCreate extends Component
 
     public string $description = '';
 
-    public int|string $costPrice = 0;
+    public int|string|null $costPrice = null;
 
-    public int|string $transferPrice = 0;
+    public int|string|null $transferPrice = null;
 
-    public int|string $salePrice = 0;
+    public int|string|null $salePrice = null;
 
     public bool $isActive = true;
 
@@ -122,9 +122,9 @@ class ProductCreate extends Component
             'sku',
             'description',
         ]);
-        $this->costPrice = 0;
-        $this->transferPrice = 0;
-        $this->salePrice = 0;
+        $this->costPrice = null;
+        $this->transferPrice = null;
+        $this->salePrice = null;
         $this->isActive = true;
         $this->resetValidation();
     }

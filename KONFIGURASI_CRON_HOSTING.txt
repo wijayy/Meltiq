@@ -1,0 +1,25 @@
+SNAPSHOT STOK OTOMATIS - HOSTINGER
+
+Laravel Scheduler harus dipanggil oleh cron server setiap menit.
+
+Jadwal cron:
+* * * * *
+
+Perintah:
+/usr/bin/php /home/u996898576/domains/meltiq.site/Meltiq/artisan schedule:run >> /dev/null 2>&1
+
+Jika lokasi binary PHP berbeda, periksa melalui SSH:
+which php
+
+Kemudian gunakan hasilnya sebagai pengganti /usr/bin/php.
+
+Setelah cron dibuat, jalankan pemeriksaan berikut melalui SSH:
+
+cd /home/u996898576/domains/meltiq.site/Meltiq
+php artisan optimize:clear
+php artisan migrate --force
+php artisan schedule:list
+php artisan stock:snapshot
+
+Perintah stock:snapshot terakhir membuat snapshot pertama secara manual. Snapshot berikutnya
+akan dijalankan otomatis setiap pukul 00.00 WITA selama cron schedule:run aktif.

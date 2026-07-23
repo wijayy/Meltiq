@@ -15,7 +15,7 @@ it('does not deactivate a warehouse', function () {
     Livewire::test(LocationIndex::class)
         ->set('locationId', $warehouse->id)
         ->call('deleteLocation')
-        ->assertSessionHas('error');
+        ->assertSee('Minimal satu lokasi untuk tipe ini harus tetap aktif.');
 
     expect($warehouse->fresh()->isActive)->toBeTrue();
 });
@@ -26,7 +26,7 @@ it('does not deactivate the virtual expired location', function () {
     Livewire::test(LocationIndex::class)
         ->set('locationId', $expired->id)
         ->call('deleteLocation')
-        ->assertSessionHas('error');
+        ->assertSee('Minimal satu lokasi untuk tipe ini harus tetap aktif.');
 
     expect($expired->fresh()->isActive)->toBeTrue();
 });
@@ -37,7 +37,7 @@ it('deactivates an outlet without deleting it', function () {
     Livewire::test(LocationIndex::class)
         ->set('locationId', $outlet->id)
         ->call('deleteLocation')
-        ->assertSessionHas('success');
+        ->assertSee('Outlet berhasil dinonaktifkan.');
 
     expect($outlet->fresh())->not->toBeNull()
         ->and($outlet->fresh()->isActive)->toBeFalse();
@@ -77,7 +77,7 @@ it('restores an inactive location', function () {
 
     Livewire::test(LocationIndex::class)
         ->call('restoreLocation', $location->id)
-        ->assertSessionHas('success');
+        ->assertSee('Lokasi berhasil dipulihkan.');
 
     expect($location->fresh()->isActive)->toBeTrue();
 });

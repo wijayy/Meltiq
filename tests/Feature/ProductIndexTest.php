@@ -12,7 +12,7 @@ it('deactivates a product without deleting it', function () {
         ->set('deleteType', 'product')
         ->set('deleteId', $product->id)
         ->call('deleteData')
-        ->assertSessionHas('success');
+        ->assertSee('Produk berhasil dinonaktifkan.');
 
     expect($product->fresh())->not->toBeNull()
         ->and($product->fresh()->isActive)->toBeFalse();
@@ -26,7 +26,7 @@ it('deactivates a category and all of its active products', function () {
         ->set('deleteType', 'category')
         ->set('deleteId', $category->id)
         ->call('deleteData')
-        ->assertSessionHas('success');
+        ->assertSee('Kategori dan seluruh produk di dalamnya berhasil dinonaktifkan.');
 
     expect($category->fresh()->isActive)->toBeFalse()
         ->and($products->every(fn (Product $product): bool => $product->fresh()->isActive === false))->toBeTrue();
@@ -57,7 +57,7 @@ it('restores a product and its inactive category', function () {
 
     Livewire::test(ProductIndex::class)
         ->call('restoreProduct', $product->id)
-        ->assertSessionHas('success');
+        ->assertSee('Produk berhasil dipulihkan.');
 
     expect($product->fresh()->isActive)->toBeTrue()
         ->and($category->fresh()->isActive)->toBeTrue();
@@ -69,7 +69,7 @@ it('restores a category and all of its products', function () {
 
     Livewire::test(ProductIndex::class)
         ->call('restoreCategory', $category->id)
-        ->assertSessionHas('success');
+        ->assertSee('Kategori dan seluruh produk berhasil dipulihkan.');
 
     expect($category->fresh()->isActive)->toBeTrue()
         ->and($products->every(fn (Product $product): bool => $product->fresh()->isActive === true))->toBeTrue();

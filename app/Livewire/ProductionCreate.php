@@ -66,7 +66,7 @@ class ProductionCreate extends Component
     }
 
     #[Computed]
-    public function warehouse(): Location
+    public function warehouse(): ?Location
     {
         $warehouseId = Setting::query()
             ->where('key', 'default_warehouse_location')
@@ -77,10 +77,6 @@ class ProductionCreate extends Component
             ->where('type', 'warehouse')
             ->when($warehouseId, fn ($query) => $query->whereKey($warehouseId))
             ->first();
-
-        if (! $warehouse) {
-            throw new RuntimeException('Default warehouse belum dikonfigurasi atau tidak aktif.');
-        }
 
         return $warehouse;
     }
@@ -124,6 +120,10 @@ class ProductionCreate extends Component
         ]);
 
         $warehouse = $this->warehouse();
+
+        if (! $warehouse) {
+            throw new RuntimeException('Default warehouse belum dikonfigurasi atau tidak aktif.');
+        }
 
         /** @var User $user */
         $user = auth()->user();

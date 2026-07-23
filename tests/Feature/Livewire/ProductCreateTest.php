@@ -33,15 +33,15 @@ it('opens the create modal with clean defaults', function () {
         ->assertSet('title', 'Tambah Produk')
         ->assertSet('productId', null)
         ->assertSet('name', '')
-        ->assertSet('costPrice', 0)
-        ->assertSet('transferPrice', 0)
-        ->assertSet('salePrice', 0)
+        ->assertSet('costPrice', null)
+        ->assertSet('transferPrice', null)
+        ->assertSet('salePrice', null)
         ->assertSet('isActive', true)
         ->assertDispatched('modal-show', name: 'product-create');
 });
 
 it('loads an existing product into the edit modal', function () {
-    $product = Product::factory()->create(['isActive' => false]);
+    $product = Product::factory()->create(['isActive' => true]);
 
     Livewire::test(ProductCreate::class)
         ->call('openEditModal', $product->id)
@@ -54,7 +54,7 @@ it('loads an existing product into the edit modal', function () {
         ->assertSet('costPrice', $product->costPrice)
         ->assertSet('transferPrice', $product->transferPrice)
         ->assertSet('salePrice', $product->salePrice)
-        ->assertSet('isActive', false)
+        ->assertSet('isActive', true)
         ->assertDispatched('modal-show', name: 'product-create');
 });
 

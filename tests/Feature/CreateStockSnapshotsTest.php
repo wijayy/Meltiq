@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\StockSnapshot;
 
 it('creates stock snapshots from current stock records', function () {
+    $this->travelTo('2026-07-24 00:00:00');
     $product = Product::factory()->create([
         'name' => 'Test Product',
         'sku' => 'SKU-001',
@@ -33,6 +34,10 @@ it('creates stock snapshots from current stock records', function () {
         'location_id' => $location->id,
         'stock' => 25,
     ]);
+
+    expect(StockSnapshot::count())->toBe(1);
+
+    $this->artisan('stock:snapshot')->assertSuccessful();
 
     expect(StockSnapshot::count())->toBe(1);
 });

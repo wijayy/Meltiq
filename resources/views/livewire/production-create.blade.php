@@ -15,8 +15,13 @@
         <form wire:submit="save" class="space-y-6">
             <div class="grid gap-4 md:grid-cols-2">
                 <flux:input wire:model="productionDate" type="date" label="Tanggal Produksi" required />
-                <flux:input :value="$this->warehouse->name" label="Gudang Tujuan" readonly />
+                <flux:input :value="$this->warehouse?->name ?? 'Belum dikonfigurasi'" label="Gudang Tujuan" readonly />
             </div>
+            @unless ($this->warehouse)
+                <flux:callout color="red" icon="exclamation-triangle">
+                    Default warehouse belum dikonfigurasi atau tidak aktif. Atur warehouse pada Pengaturan Sistem sebelum menyimpan produksi.
+                </flux:callout>
+            @endunless
             <flux:textarea wire:model="notes" label="Catatan" rows="2" placeholder="Catatan produksi (opsional)" />
 
             <div class="space-y-3">
@@ -65,7 +70,7 @@
 
             <div class="flex justify-end gap-2 border-t border-mine-200 pt-4 dark:border-mine-400">
                 <flux:button :href="route('productions.index')" wire:navigate variant="ghost">Batal</flux:button>
-                <flux:button type="submit" icon="check" variant="primary">
+                <flux:button type="submit" icon="check" variant="primary" :disabled="! $this->warehouse">
                     {{ $production ? 'Simpan Perubahan' : 'Simpan Produksi' }}
                 </flux:button>
             </div>
