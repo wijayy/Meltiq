@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Location;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class LocationSeeder extends Seeder
@@ -20,15 +19,25 @@ class LocationSeeder extends Seeder
                 'type' => 'warehouse',
             ],
             [
+                'name' => 'Big M',
+                'type' => 'outlet',
+            ],
+            [
+                'name' => 'Bintang Supermarket',
+                'type' => 'outlet',
+            ],
+            [
+                'name' => 'Grand Lucky',
+                'type' => 'outlet',
+            ],
+            [
                 'name' => 'Expired',
                 'type' => 'virtual',
-            ]
+            ],
         ];
 
         foreach ($locations as $location) {
             Location::create($location);
         }
-
-        Location::factory(5)->create();
     }
 }

@@ -23,6 +23,20 @@ class LocationIndex extends Component
     #[Url(as: 'status', except: 'active')]
     public string $status = 'active';
 
+    public function updatedStatus(): void
+    {
+        if (! in_array($this->status, ['active', 'nonactive', 'all'], true)) {
+            $this->status = 'active';
+        }
+
+        unset($this->locations);
+    }
+
+    public function updatedSearch(): void
+    {
+        unset($this->locations);
+    }
+
     /** @return Collection<int, Location> */
     #[Computed]
     public function locations(): Collection
@@ -47,20 +61,6 @@ class LocationIndex extends Component
             ->pluck('value')
             ->map(fn (string $value): int => (int) $value)
             ->all();
-    }
-
-    public function updatedStatus(): void
-    {
-        if (! in_array($this->status, ['active', 'nonactive', 'all'], true)) {
-            $this->status = 'active';
-        }
-
-        unset($this->locations);
-    }
-
-    public function updatedSearch(): void
-    {
-        unset($this->locations);
     }
 
     public function createLocation(): void

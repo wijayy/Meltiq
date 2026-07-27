@@ -5,6 +5,7 @@ use App\Models\StockSnapshot;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
@@ -29,10 +30,16 @@ Artisan::command('stock:snapshot', function () {
         }
     });
 
+    Log::info('Stock snapshot berhasil dijalankan.', [
+        'snapshot_date' => $snapshotDate->toDateTimeString(),
+        'record_count' => $currentStocks->count(),
+    ]);
+
     $this->info($currentStocks->count().' stock snapshot berhasil dibuat.');
 })->purpose('Create stock snapshots from current stock records');
 
 Schedule::command('stock:snapshot')
     ->dailyAt('00:00')
     ->timezone(config('app.timezone'))
-    ->withoutOverlapping();
+    ->withoutOverlapping(10)
+    ->appendOutputTo(storage_path('logs/stock-snapshot.log'));

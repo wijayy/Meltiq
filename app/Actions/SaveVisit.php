@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Models\CurrentStock;
 use App\Models\Location;
+use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\StockSnapshot;
 use App\Models\User;
@@ -143,11 +144,16 @@ class SaveVisit
             return;
         }
 
+        $product = Product::query()->findOrFail($detail->product_id);
+
         $detail->stockMovements()->create([
             'movement_date' => now(),
             'movement_type' => $type,
             'product_id' => $detail->product_id,
             'qty' => $qty,
+            'unit_cost' => $product->costPrice,
+            'unit_transfer_price' => $product->transferPrice,
+            'unit_sell_price' => $product->salePrice,
             'from_location_id' => $from,
             'to_location_id' => $to,
             'reference_no' => $detail->visit->visit_no,

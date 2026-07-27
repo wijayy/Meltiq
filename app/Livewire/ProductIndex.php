@@ -25,55 +25,6 @@ class ProductIndex extends Component
 
     public ?string $deleteType = null;
 
-    /** @return Collection<int, Product> */
-    #[Computed]
-    public function products(): Collection
-    {
-        return Product::query()
-            ->when($this->status !== 'all', fn ($query) => $query->where('isActive', $this->status === 'active'))
-            ->filters(['search' => $this->search])
-            ->get();
-    }
-
-    /** @return Collection<int, Category> */
-    #[Computed]
-    #[On('updateCategoryList')]
-    public function categories(): Collection
-    {
-        $isActive = $this->status === 'all' ? null : $this->status === 'active';
-
-        return Category::query()
-            ->when($this->status === 'active', fn ($query) => $query->active())
-            ->when($this->status === 'nonactive', function ($query): void {
-                $query->where(function ($query): void {
-                    $query->where('isActive', false)
-                        ->orWhereHas('products', fn ($query) => $query->where('isActive', false));
-                });
-            })
-            ->when($this->search !== '', function ($query): void {
-                $query->whereHas('products', function ($query): void {
-                    $query->when($this->status !== 'all', fn ($query) => $query->where('isActive', $this->status === 'active'))
-                        ->where(function ($query): void {
-                            $query->where('name', 'like', $this->search.'%')
-                                ->orWhere('sku', 'like', $this->search.'%');
-                        });
-                });
-            })
-            ->with(['products' => function ($query) use ($isActive): void {
-                $query->when($isActive !== null, fn ($query) => $query->where('isActive', $isActive))
-                    ->when($this->search !== '', function ($query): void {
-                        $query->where(function ($query): void {
-                            $query->where('name', 'like', $this->search.'%')
-                                ->orWhere('sku', 'like', $this->search.'%');
-                        });
-                    })
-                    ->with('currentStocks')
-                    ->orderBy('name');
-            }])
-            ->orderBy('name')
-            ->get();
-    }
-
     public function updatedStatus(): void
     {
         if (! in_array($this->status, ['active', 'nonactive', 'all'], true)) {
@@ -129,6 +80,55 @@ class ProductIndex extends Component
     {
         $this->reset(['deleteId', 'deleteType']);
         $this->dispatch('modal-close', name: 'delete-product-data');
+    }
+
+    /** @return Collection<int, Product> */
+    #[Computed]
+    public function products(): Collection
+    {
+        return Product::query()
+            ->when($this->status !== 'all', fn ($query) => $query->where('isActive', $this->status === 'active'))
+            ->filters(['search' => $this->search])
+            ->get();
+    }
+
+    /** @return Collection<int, Category> */
+    #[Computed]
+    #[On('updateCategoryList')]
+    public function categories(): Collection
+    {
+        $isActive = $this->status === 'all' ? null : $this->status === 'active';
+
+        return Category::query()
+            ->when($this->status === 'active', fn ($query) => $query->active())
+            ->when($this->status === 'nonactive', function ($query): void {
+                $query->where(function ($query): void {
+                    $query->where('isActive', false)
+                        ->orWhereHas('products', fn ($query) => $query->where('isActive', false));
+                });
+            })
+            ->when($this->search !== '', function ($query): void {
+                $query->whereHas('products', function ($query): void {
+                    $query->when($this->status !== 'all', fn ($query) => $query->where('isActive', $this->status === 'active'))
+                        ->where(function ($query): void {
+                            $query->where('name', 'like', $this->search.'%')
+                                ->orWhere('sku', 'like', $this->search.'%');
+                        });
+                });
+            })
+            ->with(['products' => function ($query) use ($isActive): void {
+                $query->when($isActive !== null, fn ($query) => $query->where('isActive', $isActive))
+                    ->when($this->search !== '', function ($query): void {
+                        $query->where(function ($query): void {
+                            $query->where('name', 'like', $this->search.'%')
+                                ->orWhere('sku', 'like', $this->search.'%');
+                        });
+                    })
+                    ->with('currentStocks')
+                    ->orderBy('name');
+            }])
+            ->orderBy('name')
+            ->get();
     }
 
     public function deleteData(): void

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Location;
+use App\Models\Product;
 use App\Models\StockMovement;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,10 +22,13 @@ class StockMovementFactory extends Factory
         return [
             'movement_date' => $this->faker->dateTime(),
             'movement_type' => $this->faker->randomElement(['production', 'transfer', 'sale', 'return', 'expired', 'adjustment']),
-            'product_id' => \App\Models\Product::factory(),
+            'product_id' => Product::factory(),
             'qty' => $this->faker->numberBetween(1, 100),
-            'from_location_id' => \App\Models\Location::factory(),
-            'to_location_id' => \App\Models\Location::factory(),
+            'unit_cost' => $this->faker->numberBetween(5000, 20000),
+            'unit_transfer_price' => $this->faker->numberBetween(20000, 30000),
+            'unit_sell_price' => $this->faker->numberBetween(30000, 50000),
+            'from_location_id' => Location::factory(),
+            'to_location_id' => Location::factory(),
             'reference_no' => $this->faker->optional()->bothify('REF-###'),
             'reference_id' => null,
             'reference_type' => null,

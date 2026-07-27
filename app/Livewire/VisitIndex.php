@@ -28,22 +28,6 @@ class VisitIndex extends Component
     #[Url(as: 'period-end', except: '')]
     public string $periodEnd = '';
 
-    /** @return Collection<int, Visit> */
-    #[Computed]
-    public function visits(): Collection
-    {
-        return Visit::query()
-            ->with(['location:id,name', 'creator:id,name', 'details.product:id,name,sku', 'details.stockMovements'])
-            ->withCount('details')
-            ->when($this->visitNo, fn ($query) => $query->where('visit_no', 'like', '%'.$this->visitNo.'%'))
-            ->when($this->location, fn ($query) => $query->whereHas('location', fn ($query) => $query->where('name', 'like', '%'.$this->location.'%')))
-            ->when($this->periodBegin, fn ($query) => $query->whereDate('visit_date', '>=', $this->periodBegin))
-            ->when($this->periodEnd, fn ($query) => $query->whereDate('visit_date', '<=', $this->periodEnd))
-            ->latest('visit_date')
-            ->latest('id')
-            ->get();
-    }
-
     public function updatedVisitNo(): void
     {
         unset($this->visits);
@@ -62,6 +46,22 @@ class VisitIndex extends Component
     public function updatedPeriodEnd(): void
     {
         unset($this->visits);
+    }
+
+    /** @return Collection<int, Visit> */
+    #[Computed]
+    public function visits(): Collection
+    {
+        return Visit::query()
+            ->with(['location:id,name', 'creator:id,name', 'details.product:id,name,sku', 'details.stockMovements'])
+            ->withCount('details')
+            ->when($this->visitNo, fn ($query) => $query->where('visit_no', 'like', '%'.$this->visitNo.'%'))
+            ->when($this->location, fn ($query) => $query->whereHas('location', fn ($query) => $query->where('name', 'like', '%'.$this->location.'%')))
+            ->when($this->periodBegin, fn ($query) => $query->whereDate('visit_date', '>=', $this->periodBegin))
+            ->when($this->periodEnd, fn ($query) => $query->whereDate('visit_date', '<=', $this->periodEnd))
+            ->latest('visit_date')
+            ->latest('id')
+            ->get();
     }
 
     public function exportExcel(): StreamedResponse

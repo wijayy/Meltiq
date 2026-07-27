@@ -42,25 +42,26 @@
                     <flux:badge color="zinc" size="sm">{{ ucfirst($location->type) }}</flux:badge>
                 </div>
                 <div class="flex w-1/4 justify-center gap-2">
-                    <flux:button wire:click="editLocation({{ $location->id }})" icon="pencil-square"
-                        variant="primary" size="sm">
+                    <flux:button wire:click="editLocation({{ $location->id }})" icon="pencil-square" variant="primary"
+                        size="sm">
                         Ubah
                     </flux:button>
-                    @if (! $location->isActive)
+                    @if (!$location->isActive)
                         <flux:button wire:click="restoreLocation({{ $location->id }})" icon="arrow-path"
                             variant="primary" size="sm">
                             Pulihkan
                         </flux:button>
-                    @elseif (! in_array($location->id, $this->systemLocationIds, true))
-                        <flux:button wire:click="openDeleteModal({{ $location->id }})" icon="trash"
-                            variant="danger" size="sm">
+                    @elseif (!in_array($location->id, $this->systemLocationIds, true))
+                        <flux:button wire:click="openDeleteModal({{ $location->id }})" icon="trash" variant="danger"
+                            size="sm">
                             Hapus
                         </flux:button>
                     @endif
                 </div>
             </div>
         @empty
-            <div class="min-w-3xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400 dark:text-mine-100">
+            <div
+                class="min-w-3xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400 dark:text-mine-100">
                 Lokasi tidak ditemukan.
             </div>
         @endforelse

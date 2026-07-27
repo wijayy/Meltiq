@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            LocationSeeder::class,
+            SettingSeeder::class,
             MeltiqCatalogSeeder::class,
         ]);
     }

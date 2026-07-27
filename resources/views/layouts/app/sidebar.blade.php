@@ -49,6 +49,12 @@
                     {{ __('Visits') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>
+            <flux:sidebar.group :heading="__('Laporan')" class="grid">
+                <flux:sidebar.item icon="banknotes" :href="route('financial-reports.index')"
+                    :current="request()->routeIs('financial-reports.*')" wire:navigate>
+                    {{ __('Keuangan') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
 
             <flux:sidebar.group :heading="__('Admin')" class="grid">
                 <flux:sidebar.item icon="users" :href="route('users.index')"

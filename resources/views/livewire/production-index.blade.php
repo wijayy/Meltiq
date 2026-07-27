@@ -11,7 +11,8 @@
                     <span wire:loading.remove wire:target="exportExcel">Ekspor Excel</span>
                     <span wire:loading wire:target="exportExcel">Membuat Excel...</span>
                 </flux:button>
-                <flux:button :href="route('productions.create')" wire:navigate icon="plus" variant="primary" size="sm">
+                <flux:button :href="route('productions.create')" wire:navigate icon="plus" variant="primary"
+                    size="sm">
                     Tambah Produksi
                 </flux:button>
             </div>
@@ -21,8 +22,8 @@
     <flux:sidebar-content>
         <div class="flex min-w-4xl flex-wrap items-end gap-4">
             <div class="w-full sm:w-64">
-                <flux:input wire:model.live.debounce.300ms="productionNo" icon="magnifying-glass"
-                    label="Nomor Produksi" placeholder="Cari nomor produksi..." />
+                <flux:input wire:model.live.debounce.300ms="productionNo" icon="magnifying-glass" label="Nomor Produksi"
+                    placeholder="Cari nomor produksi..." />
             </div>
             <div class="w-full sm:w-48">
                 <flux:input wire:model.live="periodBegin" type="date" label="Awal Periode" />
@@ -31,8 +32,8 @@
                 <flux:input wire:model.live="periodEnd" type="date" label="Akhir Periode" />
             </div>
             <div class="w-full sm:w-64">
-                <flux:input wire:model.live.debounce.300ms="createdBy" icon="user"
-                    label="Dibuat Oleh" placeholder="Cari nama pembuat..." />
+                <flux:input wire:model.live.debounce.300ms="createdBy" icon="user" label="Dibuat Oleh"
+                    placeholder="Cari nama pembuat..." />
             </div>
         </div>
 
@@ -67,7 +68,8 @@
                 </div>
             </div>
         @empty
-            <div class="min-w-4xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400 dark:text-mine-100">
+            <div
+                class="min-w-4xl border-t border-mine-200 py-10 text-center text-sm text-mine-300 dark:border-mine-400 dark:text-mine-100">
                 Data produksi belum tersedia.
             </div>
         @endforelse

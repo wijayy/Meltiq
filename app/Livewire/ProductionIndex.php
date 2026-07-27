@@ -28,20 +28,6 @@ class ProductionIndex extends Component
     #[Url(as: 'created-by', except: '')]
     public string $createdBy = '';
 
-    /** @return Collection<int, Production> */
-    #[Computed]
-    public function productions(): Collection
-    {
-        return Production::query()
-            ->with(['creator:id,name', 'details.product:id,name,sku', 'details.stockMovements'])
-            ->withCount('details')
-            ->withSum('details', 'qty')
-            ->reportFilters($this->filters())
-            ->latest('production_date')
-            ->latest('id')
-            ->get();
-    }
-
     public function updatedProductionNo(): void
     {
         unset($this->productions);
@@ -60,6 +46,20 @@ class ProductionIndex extends Component
     public function updatedCreatedBy(): void
     {
         unset($this->productions);
+    }
+
+    /** @return Collection<int, Production> */
+    #[Computed]
+    public function productions(): Collection
+    {
+        return Production::query()
+            ->with(['creator:id,name', 'details.product:id,name,sku', 'details.stockMovements'])
+            ->withCount('details')
+            ->withSum('details', 'qty')
+            ->reportFilters($this->filters())
+            ->latest('production_date')
+            ->latest('id')
+            ->get();
     }
 
     public function exportExcel(): StreamedResponse

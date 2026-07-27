@@ -19,10 +19,12 @@
             </div>
             @unless ($this->warehouse)
                 <flux:callout color="red" icon="exclamation-triangle">
-                    Default warehouse belum dikonfigurasi atau tidak aktif. Atur warehouse pada Pengaturan Sistem sebelum menyimpan produksi.
+                    Default warehouse belum dikonfigurasi atau tidak aktif. Atur warehouse pada Pengaturan Sistem sebelum
+                    menyimpan produksi.
                 </flux:callout>
             @endunless
-            <flux:textarea wire:model="notes" label="Catatan" rows="2" placeholder="Catatan produksi (opsional)" />
+            <flux:textarea wire:model="notes" label="Catatan" rows="2"
+                placeholder="Catatan produksi (opsional)" />
 
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
@@ -44,9 +46,11 @@
                         class="flex min-w-3xl items-start gap-4 border-t border-mine-200 pt-3 dark:border-mine-400">
                         <div class="w-10 pt-2">{{ $index + 1 }}</div>
                         <div class="w-3/5">
-                            <flux:select wire:model="details.{{ $index }}.product_id" placeholder="Pilih product">
+                            <flux:select wire:model="details.{{ $index }}.product_id"
+                                placeholder="Pilih product">
                                 @foreach ($this->products as $product)
-                                    <flux:select.option wire:key="production-product-{{ $index }}-{{ $product->id }}"
+                                    <flux:select.option
+                                        wire:key="production-product-{{ $index }}-{{ $product->id }}"
                                         value="{{ $product->id }}">
                                         {{ $product->name }} — {{ $product->sku }}
                                     </flux:select.option>

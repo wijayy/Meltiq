@@ -6,7 +6,7 @@ Jadwal cron:
 * * * * *
 
 Perintah:
-/usr/bin/php /home/u996898576/domains/meltiq.site/Meltiq/artisan schedule:run >> /dev/null 2>&1
+/usr/bin/php /home/u996898576/domains/meltiq.site/Meltiq/artisan schedule:run >> /home/u996898576/domains/meltiq.site/Meltiq/storage/logs/scheduler.log 2>&1
 
 Jika lokasi binary PHP berbeda, periksa melalui SSH:
 which php
@@ -20,6 +20,9 @@ php artisan optimize:clear
 php artisan migrate --force
 php artisan schedule:list
 php artisan stock:snapshot
+tail -n 100 storage/logs/laravel.log
+tail -n 100 storage/logs/stock-snapshot.log
+tail -n 100 storage/logs/scheduler.log
 
 Perintah stock:snapshot terakhir membuat snapshot pertama secara manual. Snapshot berikutnya
 akan dijalankan otomatis setiap pukul 00.00 WITA selama cron schedule:run aktif.

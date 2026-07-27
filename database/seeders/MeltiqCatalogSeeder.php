@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\CurrentStock;
 use App\Models\Location;
 use App\Models\Product;
 use App\Models\Setting;
@@ -19,16 +18,16 @@ class MeltiqCatalogSeeder extends Seeder
      */
     private array $catalog = [
         'Bolu Kering' => [
-            ['name' => 'Bolu Kering Sachet', 'sku' => 'SKU-962', 'price' => 32000, 'stock' => 0],
-            ['name' => 'Bolu Kering Toples', 'sku' => 'SKU-106', 'price' => 39000, 'stock' => 15],
+            ['name' => 'Bolu Kering Sachet', 'sku' => 'SKU-962', 'price' => 32000],
+            ['name' => 'Bolu Kering Toples', 'sku' => 'SKU-106', 'price' => 39000],
         ],
         'Cake Layer' => [
-            ['name' => 'Chocolate', 'sku' => 'SKU-765', 'price' => 35000, 'stock' => 0],
-            ['name' => 'Matcha', 'sku' => 'SKU-590', 'price' => 20000, 'stock' => 0],
-            ['name' => 'Red Velvet', 'sku' => 'SKU-969', 'price' => 26000, 'stock' => 20],
-            ['name' => 'Taro', 'sku' => 'SKU-804', 'price' => 30000, 'stock' => 0],
-            ['name' => 'Tiramisu', 'sku' => 'SKU-401', 'price' => 20000, 'stock' => 0],
-            ['name' => 'Vanilla Almond', 'sku' => 'SKU-198', 'price' => 24000, 'stock' => 0],
+            ['name' => 'Chocolate', 'sku' => 'SKU-765', 'price' => 17000],
+            ['name' => 'Matcha', 'sku' => 'SKU-590', 'price' => 17000],
+            ['name' => 'Red Velvet', 'sku' => 'SKU-969', 'price' => 17000],
+            ['name' => 'Taro', 'sku' => 'SKU-804', 'price' => 17000],
+            ['name' => 'Tiramisu', 'sku' => 'SKU-401', 'price' => 17000],
+            ['name' => 'Vanilla Almond', 'sku' => 'SKU-198', 'price' => 17000],
         ],
     ];
 
@@ -36,7 +35,7 @@ class MeltiqCatalogSeeder extends Seeder
     {
         $warehouse = $this->defaultWarehouse();
 
-        DB::transaction(function () use ($warehouse): void {
+        DB::transaction(function (): void {
             foreach ($this->catalog as $categoryName => $products) {
                 $category = Category::query()->updateOrCreate(
                     ['slug' => Str::slug($categoryName)],
@@ -52,18 +51,10 @@ class MeltiqCatalogSeeder extends Seeder
                             'slug' => Str::slug($data['name']),
                             'description' => $data['name'],
                             'costPrice' => $data['price'],
-                            'transferPrice' => $data['price'],
-                            'salePrice' => $data['price'],
+                            'transferPrice' => $data['price'] + 5000,
+                            'salePrice' => $data['price'] + 10000,
                             'isActive' => true,
                         ],
-                    );
-
-                    CurrentStock::query()->updateOrCreate(
-                        [
-                            'product_id' => $product->id,
-                            'location_id' => $warehouse->id,
-                        ],
-                        ['stock' => $data['stock']],
                     );
                 }
             }

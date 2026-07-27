@@ -36,6 +36,26 @@ class StockMovementIndex extends Component
     #[Url(as: 'location', except: '')]
     public string $locationSlug = '';
 
+    public function updatedPeriodBegin(): void
+    {
+        $this->clearComputedData();
+    }
+
+    public function updatedPeriodEnd(): void
+    {
+        $this->clearComputedData();
+    }
+
+    public function updatedProductSlug(): void
+    {
+        $this->clearComputedData();
+    }
+
+    public function updatedLocationSlug(): void
+    {
+        $this->clearComputedData();
+    }
+
     /** @return EloquentCollection<int, StockMovement> */
     #[Computed]
     public function movements(): EloquentCollection
@@ -135,26 +155,6 @@ class StockMovementIndex extends Component
         }
 
         return $summary;
-    }
-
-    public function updatedPeriodBegin(): void
-    {
-        $this->clearComputedData();
-    }
-
-    public function updatedPeriodEnd(): void
-    {
-        $this->clearComputedData();
-    }
-
-    public function updatedProductSlug(): void
-    {
-        $this->clearComputedData();
-    }
-
-    public function updatedLocationSlug(): void
-    {
-        $this->clearComputedData();
     }
 
     public function exportExcel(): StreamedResponse

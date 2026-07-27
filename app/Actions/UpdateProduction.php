@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Models\CurrentStock;
 use App\Models\Location;
+use App\Models\Product;
 use App\Models\Production;
 use App\Models\ProductionDetail;
 use App\Models\StockMovement;
@@ -50,12 +51,16 @@ class UpdateProduction
             ]);
 
             foreach ($details as $detail) {
+                $product = Product::query()->findOrFail($detail['product_id']);
                 $productionDetail = $production->details()->create($detail);
                 $productionDetail->stockMovements()->create([
                     'movement_date' => now(),
                     'movement_type' => 'production',
                     'product_id' => $detail['product_id'],
                     'qty' => $detail['qty'],
+                    'unit_cost' => $product->costPrice,
+                    'unit_transfer_price' => $product->transferPrice,
+                    'unit_sell_price' => $product->salePrice,
                     'from_location_id' => null,
                     'to_location_id' => $warehouse->id,
                     'reference_no' => $production->production_no,

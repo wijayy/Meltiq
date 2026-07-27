@@ -12,7 +12,12 @@ use App\Models\User;
 it('creates an auditable production and updates warehouse stock', function () {
     $user = User::factory()->create();
     $warehouse = Location::factory()->create(['type' => 'warehouse', 'isActive' => true]);
-    $products = Product::factory()->count(2)->create(['isActive' => true]);
+    $products = Product::factory()->count(2)->create([
+        'isActive' => true,
+        'costPrice' => 10000,
+        'transferPrice' => 15000,
+        'salePrice' => 20000,
+    ]);
 
     CurrentStock::factory()->create([
         'product_id' => $products[0]->id,
@@ -37,6 +42,9 @@ it('creates an auditable production and updates warehouse stock', function () {
     expect($production)->toBeInstanceOf(Production::class)
         ->and($production->details)->toHaveCount(2)
         ->and($movements)->toHaveCount(2)
+        ->and($movements->every(fn (StockMovement $movement): bool => $movement->unit_cost === 10000
+            && $movement->unit_transfer_price === 15000
+            && $movement->unit_sell_price === 20000))->toBeTrue()
         ->and($production->created_by)->toBe($user->id)
         ->and($movements->every(
             fn (StockMovement $movement): bool => $movement->movement_type === 'production'

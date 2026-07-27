@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Dashboard;
+use App\Livewire\FinancialReport;
 use App\Livewire\LocationIndex;
 use App\Livewire\ProductIndex;
 use App\Livewire\ProductionCreate;
@@ -18,6 +19,7 @@ Route::get('/', fn () => redirect()->route('login'))->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
+    Route::get('financial-reports', FinancialReport::class)->name('financial-reports.index');
     Route::get('products', ProductIndex::class)->name('products.index');
     Route::get('locations', LocationIndex::class)->name('locations.index');
     Route::get('stocks', StockIndex::class)->name('stocks.index');

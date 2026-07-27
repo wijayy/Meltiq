@@ -17,6 +17,9 @@ class StockMovement extends Model
 
     protected $casts = [
         'movement_date' => 'datetime',
+        'unit_cost' => 'integer',
+        'unit_transfer_price' => 'integer',
+        'unit_sell_price' => 'integer',
     ];
 
     /** @return BelongsTo<Location, $this> */

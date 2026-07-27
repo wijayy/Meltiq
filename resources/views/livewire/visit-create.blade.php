@@ -19,7 +19,8 @@
                     @endforeach
                 </flux:select>
             </div>
-            <flux:textarea wire:model="notes" label="Catatan" rows="2" placeholder="Catatan pengiriman (opsional)" />
+            <flux:textarea wire:model="notes" label="Catatan" rows="2"
+                placeholder="Catatan pengiriman (opsional)" />
             <flux:callout icon="information-circle" color="zinc">
                 <div class="space-y-1 text-sm">
                     <div><strong>Produk outlet:</strong> otomatis dimuat dan wajib diisi. Fisik adalah stok layak
@@ -49,8 +50,8 @@
                     class="flex w-full min-w-7xl items-start gap-3 border-t border-mine-200 pt-3 dark:border-mine-400">
                     <div class="w-8 pt-2">{{ $index + 1 }}</div>
                     <div class="min-w-64 flex-1">
-                        <flux:select wire:model.live="details.{{ $index }}.product_id"
-                            placeholder="Pilih produk" :disabled="$detail['isOutletStock']">
+                        <flux:select wire:model.live="details.{{ $index }}.product_id" placeholder="Pilih produk"
+                            :disabled="$detail['isOutletStock']">
                             @foreach ($this->products as $product)
                                 <flux:select.option wire:key="visit-product-{{ $index }}-{{ $product->id }}"
                                     value="{{ $product->id }}">{{ $product->name }} — {{ $product->sku }}

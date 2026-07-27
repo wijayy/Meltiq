@@ -2,18 +2,16 @@
 
 namespace App\Livewire;
 
-use App\Actions\BuildStockExcel;
-use App\Actions\GetStockSummaryReport;
+use App\Actions\BuildFinancialReportExcel;
+use App\Actions\GetFinancialReport;
 use App\Models\Location;
 use App\Models\Product;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
@@ -22,12 +20,15 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
 
-class StockIndex extends Component
+class FinancialReport extends Component
 {
-    public string $title = 'Laporan Konsinyasi';
+    public string $title = 'Laporan Keuangan';
 
-    #[Url(as: 'datetime', except: '')]
-    public string $selectedDateTime = '';
+    #[Url(as: 'from')]
+    public string $dateFrom = '';
+
+    #[Url(as: 'to')]
+    public string $dateTo = '';
 
     #[Url(as: 'product', except: '')]
     public string $productSlug = '';
@@ -35,49 +36,19 @@ class StockIndex extends Component
     #[Url(as: 'location', except: '')]
     public string $locationSlug = '';
 
-    public function updatedSelectedDateTime(): void
+    /** @var array<int, string> */
+    public array $exportSections = ['summary', 'sales', 'losses'];
+
+    public function mount(): void
     {
-        unset($this->stocks);
+        $this->dateFrom = $this->dateFrom ?: now()->startOfMonth()->toDateString();
+        $this->dateTo = $this->dateTo ?: now()->toDateString();
     }
 
-    public function updatedProductSlug(): void
-    {
-        unset($this->stocks);
-    }
-
-    public function updatedLocationSlug(): void
-    {
-        unset($this->stocks);
-    }
-
-    public function resetDateTime(): void
-    {
-        $this->selectedDateTime = '';
-        unset($this->stocks);
-    }
-
-    /**
-     * @return Collection<int, array{
-     *     product_id: int,
-     *     product_name: string,
-     *     sku: string,
-     *     location_id: int,
-     *     location_name: string,
-     *     location_type: string,
-     *     physical: int,
-     *     sales: int,
-     *     returned: int,
-     *     expired: int,
-     *     total: int
-     * }>
-     */
+    /** @return array<string, mixed> */
     #[Computed]
-    public function stocks(): Collection
+    public function report(): array
     {
-        $at = $this->selectedDateTime !== ''
-            ? Carbon::createFromFormat('Y-m-d\TH:i', $this->selectedDateTime)
-            : null;
-
         $productId = $this->productSlug !== ''
             ? Product::query()->where('slug', $this->productSlug)->value('id')
             : null;
@@ -85,54 +56,56 @@ class StockIndex extends Component
             ? Location::query()->where('slug', $this->locationSlug)->value('id')
             : null;
 
-        if (($this->productSlug !== '' && $productId === null)
-            || ($this->locationSlug !== '' && $locationId === null)
-        ) {
-            return collect();
-        }
-
-        return app(GetStockSummaryReport::class)->handle(
-            at: $at,
-            productId: $productId !== null ? (int) $productId : null,
-            locationId: $locationId !== null ? (int) $locationId : null,
+        return app(GetFinancialReport::class)->handle(
+            $this->dateFrom,
+            $this->dateTo,
+            $productId !== null ? (int) $productId : null,
+            $locationId !== null ? (int) $locationId : null,
         );
     }
 
-    /** @return EloquentCollection<int, Product> */
+    /** @return Collection<int, Product> */
     #[Computed]
-    public function products(): EloquentCollection
+    public function products(): Collection
     {
         return Product::query()->orderBy('name')->get(['id', 'name', 'sku', 'slug']);
     }
 
-    /** @return EloquentCollection<int, Location> */
+    /** @return Collection<int, Location> */
     #[Computed]
-    public function locations(): EloquentCollection
+    public function locations(): Collection
     {
-        return Location::query()
-            ->orderByRaw("case type when 'warehouse' then 1 when 'outlet' then 2 else 3 end")
-            ->orderBy('name')
-            ->get(['id', 'name', 'type', 'slug']);
+        return Location::query()->orderBy('name')->get(['id', 'name', 'type', 'slug']);
     }
 
-    public function exportExcel(): StreamedResponse
+    public function exportExcel(): ?StreamedResponse
     {
+        $allowedSections = ['summary', 'sales', 'productions', 'transfers', 'losses', 'inventory', 'reconciliation'];
+        $sections = array_values(array_intersect($allowedSections, $this->exportSections));
+
+        if ($sections === []) {
+            $this->addError('exportSections', 'Pilih minimal satu bagian laporan.');
+
+            return null;
+        }
+
         $product = $this->productSlug !== ''
             ? Product::query()->where('slug', $this->productSlug)->first()
             : null;
         $location = $this->locationSlug !== ''
             ? Location::query()->where('slug', $this->locationSlug)->first()
             : null;
-        $stockTime = $this->selectedDateTime !== ''
-            ? Carbon::createFromFormat('Y-m-d\TH:i', $this->selectedDateTime)->format('d/m/Y H:i')
-            : 'Saat ini ('.now()->format('d/m/Y H:i').')';
-        $contents = app(BuildStockExcel::class)->handle($this->stocks(), [
-            'stock_time' => $stockTime,
-            'product' => $product ? $product->name.' — '.$product->sku : 'Semua Produk',
-            'location' => $location ? $location->name.' ('.$this->locationTypeLabel($location->type).')' : 'Semua Lokasi',
-            'exported_at' => now()->format('d/m/Y H:i:s'),
-        ]);
-        $filename = 'stock-report-'.now()->format('Ymd-His').'.xlsx';
+        $contents = app(BuildFinancialReportExcel::class)->handle(
+            $this->report(),
+            $sections,
+            [
+                'period' => $this->dateFrom.' s/d '.$this->dateTo,
+                'product' => $product ? $product->name.' — '.$product->sku : 'Semua Produk',
+                'location' => $location ? $location->name : 'Semua Lokasi',
+                'exported_at' => now()->format('d/m/Y H:i:s'),
+            ],
+        );
+        $filename = 'laporan-keuangan-'.$this->dateFrom.'-'.$this->dateTo.'.xlsx';
 
         return response()->streamDownload(
             function () use ($contents): void {
@@ -143,19 +116,9 @@ class StockIndex extends Component
         );
     }
 
-    public function locationTypeLabel(string $type): string
-    {
-        return match ($type) {
-            'warehouse' => 'Gudang',
-            'outlet' => 'Outlet',
-            'virtual' => 'Virtual',
-            default => $type,
-        };
-    }
-
     public function render(): View
     {
-        return view('livewire.stock-index');
+        return view('livewire.financial-report');
     }
 
     public function exception(Throwable $exception, Closure $stopPropagation): void
