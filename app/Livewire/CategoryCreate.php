@@ -30,6 +30,7 @@ class CategoryCreate extends Component
     }
 
     #[On('editCategory')]
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function openEditModal($id)
     {
         $category = Category::query()->active()->findOrFail($id);
@@ -59,6 +60,8 @@ class CategoryCreate extends Component
     {
         return view('livewire.category-create');
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function exception($e, $stopPropagation)
     {

@@ -1,3 +1,4 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
 
@@ -46,7 +47,7 @@
         </div>
 
         <flux:callout icon="information-circle" color="zinc">
-            Fisik adalah stok pada waktu laporan. Terjual, dikembalikan, dan kedaluwarsa merupakan akumulasi
+            Fisik adalah stok pada waktu laporan. Terjual, diskon, dan rusak merupakan akumulasi
             pergerakan keluar dari lokasi sampai waktu tersebut.
         </flux:callout>
 
@@ -64,9 +65,9 @@
                     </tr>
                     <tr>
                         <th class="min-w-28 border border-mine-200 p-2 text-right text-red-600 dark:border-mine-400">
-                            Kedaluwarsa</th>
+                            Rusak</th>
                         <th class="min-w-28 border border-mine-200 p-2 text-right text-amber-600 dark:border-mine-400">
-                            Dikembalikan</th>
+                            Diskon</th>
                         <th
                             class="min-w-28 border border-mine-200 p-2 text-right text-mine-400 dark:border-mine-400 dark:text-mine-100">
                             Fisik</th>
@@ -91,9 +92,9 @@
                                 <div class="text-xs text-zinc-500">{{ $stock['sku'] }}</div>
                             </td>
                             <td class="border border-mine-200 p-3 text-right text-red-600 dark:border-mine-400">
-                                {{ number_format($stock['expired']) }} Pcs</td>
+                                {{ number_format($stock['damaged']) }} Pcs</td>
                             <td class="border border-mine-200 p-3 text-right text-amber-600 dark:border-mine-400">
-                                {{ number_format($stock['returned']) }} Pcs</td>
+                                {{ number_format($stock['discounted']) }} Pcs</td>
                             <td
                                 class="border border-mine-200 p-3 text-right font-semibold text-mine-400 dark:border-mine-400 dark:text-mine-100">
                                 {{ number_format($stock['physical']) }} Pcs</td>
@@ -115,3 +116,4 @@
         </div>
     </flux:sidebar-content>
 </div>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

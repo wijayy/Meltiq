@@ -1,3 +1,4 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <section class="w-full">
     @include('partials.settings-heading')
 
@@ -325,3 +326,4 @@
         </div>
     </flux:modal>
 </section>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

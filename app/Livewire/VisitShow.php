@@ -12,6 +12,7 @@ class VisitShow extends Component
 
     public Visit $visit;
 
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function mount(Visit $visit): void
     {
         $this->visit = $visit->load(['location:id,name,type', 'creator:id,name', 'details.product:id,name,sku']);
@@ -21,4 +22,5 @@ class VisitShow extends Component
     {
         return view('livewire.visit-show');
     }
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 }

@@ -1,3 +1,4 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <div class="space-y-4">
     <x-slot name="title">
         {{ $title }}
@@ -14,3 +15,4 @@
         </form>
     </flux:modal>
 </div>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

@@ -58,6 +58,7 @@ class StockMovementIndex extends Component
 
     /** @return EloquentCollection<int, StockMovement> */
     #[Computed]
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function movements(): EloquentCollection
     {
         return StockMovement::query()
@@ -106,6 +107,8 @@ class StockMovementIndex extends Component
 
     /** @return Collection<int, Product> */
     #[Computed]
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
+
     public function summaryProducts(): Collection
     {
         return $this->movements()->pluck('product')->filter()->unique('id')->sortBy('name')->values();
@@ -119,15 +122,15 @@ class StockMovementIndex extends Component
             ->flatMap(fn (StockMovement $movement): array => [$movement->fromLocation, $movement->toLocation])
             ->filter()
             ->unique('id');
-        $expiredLocationId = (int) Setting::query()
-            ->where('key', 'default_expired_location')
+        $damagedLocationId = (int) Setting::query()
+            ->where('key', 'default_damaged_location')
             ->value('value');
 
-        if ($expiredLocationId > 0 && ! $locations->contains('id', $expiredLocationId)) {
-            $expiredLocation = Location::query()->find($expiredLocationId);
+        if ($damagedLocationId > 0 && ! $locations->contains('id', $damagedLocationId)) {
+            $damagedLocation = Location::query()->find($damagedLocationId);
 
-            if ($expiredLocation !== null) {
-                $locations->push($expiredLocation);
+            if ($damagedLocation !== null) {
+                $locations->push($damagedLocation);
             }
         }
 

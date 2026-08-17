@@ -16,6 +16,7 @@ class DeleteUserForm extends Component
     /**
      * Delete the currently authenticated user.
      */
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function deleteUser(Logout $logout): void
     {
         $this->validate([
@@ -26,4 +27,5 @@ class DeleteUserForm extends Component
 
         $this->redirect('/', navigate: true);
     }
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 }

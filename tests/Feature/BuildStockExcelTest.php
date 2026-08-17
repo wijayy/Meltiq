@@ -15,8 +15,8 @@ it('builds an xlsx stock report containing filters and stock rows', function () 
             'location_type' => 'warehouse',
             'physical' => 25,
             'sales' => 6,
-            'returned' => 2,
-            'expired' => 1,
+            'discounted' => 2,
+            'damaged' => 1,
             'total' => 34,
         ],
     ]), [

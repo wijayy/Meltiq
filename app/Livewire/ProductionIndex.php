@@ -50,6 +50,7 @@ class ProductionIndex extends Component
 
     /** @return Collection<int, Production> */
     #[Computed]
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function productions(): Collection
     {
         return Production::query()
@@ -91,6 +92,8 @@ class ProductionIndex extends Component
             'created_by' => $this->createdBy,
         ];
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function render(): View
     {

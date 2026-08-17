@@ -39,6 +39,7 @@ class FinancialReport extends Component
     /** @var array<int, string> */
     public array $exportSections = ['summary', 'sales', 'losses'];
 
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function mount(): void
     {
         $this->dateFrom = $this->dateFrom ?: now()->startOfMonth()->toDateString();
@@ -70,6 +71,8 @@ class FinancialReport extends Component
     {
         return Product::query()->orderBy('name')->get(['id', 'name', 'sku', 'slug']);
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     /** @return Collection<int, Location> */
     #[Computed]

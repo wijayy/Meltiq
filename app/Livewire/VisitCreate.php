@@ -29,13 +29,18 @@ class VisitCreate extends Component
 
     public string $notes = '';
 
-    /** @var array<int, array{product_id: string|int, warehouseStock: int, stockBefore: int, physicalStock: string|int, returnedQty: string|int, expiredQty: string|int, newDeliveryQty: string|int, isOutletStock: bool}> */
+    /** @var array<int, array{product_id: string|int, warehouseStock: int, stockBefore: int, physicalStock: string|int, discountQty: string|int, damagedQty: string|int, newDeliveryQty: string|int, isOutletStock: bool}> */
     public array $details = [];
 
     public function mount(?Visit $visit = null): void
     {
         if ($visit?->exists) {
             abort_unless($visit->isEditable(), 403, 'Pengiriman sudah masuk rekaman stok dan tidak dapat diubah.');
+            abort_if(
+                $visit->details()->where('returnedQty', '>', 0)->exists(),
+                403,
+                'Pengiriman lama yang memiliki produk dikembalikan tidak dapat diubah melalui alur diskon baru.',
+            );
             $this->visit = $visit;
             $this->title = 'Ubah Pengiriman';
             $this->visitDate = $visit->visit_date->toDateString();
@@ -46,8 +51,8 @@ class VisitCreate extends Component
                 'warehouseStock' => $this->warehouseStockFor($detail->product_id),
                 'stockBefore' => $detail->stockBefore,
                 'physicalStock' => $detail->physicalStock,
-                'returnedQty' => $detail->returnedQty,
-                'expiredQty' => $detail->expiredQty,
+                'discountQty' => $detail->discountQty,
+                'damagedQty' => $detail->damagedQty + $detail->expiredQty,
                 'newDeliveryQty' => $detail->newDeliveryQty,
                 'isOutletStock' => $detail->stockBefore > 0,
             ])->all();
@@ -78,7 +83,7 @@ class VisitCreate extends Component
             return;
         }
 
-        $this->details[] = ['product_id' => '', 'warehouseStock' => 0, 'stockBefore' => 0, 'physicalStock' => 0, 'returnedQty' => 0, 'expiredQty' => 0, 'newDeliveryQty' => 0, 'isOutletStock' => false];
+        $this->details[] = ['product_id' => '', 'warehouseStock' => 0, 'stockBefore' => 0, 'physicalStock' => 0, 'discountQty' => 0, 'damagedQty' => 0, 'newDeliveryQty' => 0, 'isOutletStock' => false];
     }
 
     public function removeDetail(int $index): void
@@ -95,6 +100,7 @@ class VisitCreate extends Component
         $this->loadOutletProducts();
     }
 
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function updatedDetails(mixed $value, ?string $key): void
     {
         if (str_ends_with($key, '.product_id')) {
@@ -119,8 +125,8 @@ class VisitCreate extends Component
                     'warehouseStock' => $productId > 0 ? $this->warehouseStockFor($productId) : 0,
                     'stockBefore' => 0,
                     'physicalStock' => 0,
-                    'returnedQty' => 0,
-                    'expiredQty' => 0,
+                    'discountQty' => 0,
+                    'damagedQty' => 0,
                 ];
             }
         }
@@ -136,8 +142,8 @@ class VisitCreate extends Component
             'details.*.product_id' => ['required', 'integer', 'distinct', Rule::exists('products', 'id')->where('isActive', true)],
             'details.*.stockBefore' => ['required', 'integer', 'min:0'],
             'details.*.physicalStock' => ['required', 'integer', 'min:0'],
-            'details.*.returnedQty' => ['required', 'integer', 'min:0'],
-            'details.*.expiredQty' => ['required', 'integer', 'min:0'],
+            'details.*.discountQty' => ['required', 'integer', 'min:0'],
+            'details.*.damagedQty' => ['required', 'integer', 'min:0'],
             'details.*.newDeliveryQty' => ['required', 'integer', 'min:0'],
         ]);
 
@@ -147,8 +153,8 @@ class VisitCreate extends Component
             'product_id' => (int) $detail['product_id'],
             'stockBefore' => (int) $detail['stockBefore'],
             'physicalStock' => (int) $detail['physicalStock'],
-            'returnedQty' => (int) $detail['returnedQty'],
-            'expiredQty' => (int) $detail['expiredQty'],
+            'discountQty' => (int) $detail['discountQty'],
+            'damagedQty' => (int) $detail['damagedQty'],
             'newDeliveryQty' => (int) $detail['newDeliveryQty'],
         ], $validated['details']);
 
@@ -156,7 +162,7 @@ class VisitCreate extends Component
             creator: $user,
             outlet: Location::query()->findOrFail((int) $validated['locationId']),
             warehouse: $this->configuredLocation('default_warehouse_location', 'warehouse'),
-            expiredLocation: $this->configuredLocation('default_expired_location', 'virtual'),
+            damagedLocation: $this->configuredLocation('default_damaged_location', 'virtual'),
             visitDate: $validated['visitDate'],
             notes: $validated['notes'] ?: null,
             details: $detailPayloads,
@@ -192,12 +198,14 @@ class VisitCreate extends Component
                 'warehouseStock' => (int) ($warehouseStocks[$stock->product_id] ?? 0),
                 'stockBefore' => $stock->stock,
                 'physicalStock' => $stock->stock,
-                'returnedQty' => 0,
-                'expiredQty' => 0,
+                'discountQty' => 0,
+                'damagedQty' => 0,
                 'newDeliveryQty' => 0,
                 'isOutletStock' => true,
             ])->all();
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     private function warehouseStockFor(int $productId): int
     {

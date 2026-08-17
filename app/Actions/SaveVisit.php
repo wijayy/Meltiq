@@ -16,19 +16,19 @@ use LogicException;
 class SaveVisit
 {
     /**
-     * @param  array<int, array{product_id: int, stockBefore: int, physicalStock: int, returnedQty: int, expiredQty: int, newDeliveryQty: int}>  $details
+     * @param  array<int, array{product_id: int, stockBefore: int, physicalStock: int, discountQty: int, damagedQty: int, newDeliveryQty: int}>  $details
      */
     public function handle(
         User $creator,
         Location $outlet,
         Location $warehouse,
-        Location $expiredLocation,
+        Location $damagedLocation,
         string $visitDate,
         ?string $notes,
         array $details,
         ?Visit $visit = null,
     ): Visit {
-        return DB::transaction(function () use ($creator, $outlet, $warehouse, $expiredLocation, $visitDate, $notes, $details, $visit): Visit {
+        return DB::transaction(function () use ($creator, $outlet, $warehouse, $damagedLocation, $visitDate, $notes, $details, $visit): Visit {
             if ($visit) {
                 $visit = Visit::query()->with('details.stockMovements')->lockForUpdate()->findOrFail($visit->id);
                 $this->reverseExistingVisit($visit);
@@ -63,7 +63,7 @@ class SaveVisit
             }
 
             foreach ($details as $detailData) {
-                $this->storeDetail($visit, $outlet, $warehouse, $expiredLocation, $detailData);
+                $this->storeDetail($visit, $outlet, $warehouse, $damagedLocation, $detailData);
             }
 
             return $visit->refresh();
@@ -93,8 +93,8 @@ class SaveVisit
         $visit->details()->delete();
     }
 
-    /** @param array{product_id: int, stockBefore: int, physicalStock: int, returnedQty: int, expiredQty: int, newDeliveryQty: int} $data */
-    private function storeDetail(Visit $visit, Location $outlet, Location $warehouse, Location $expiredLocation, array $data): void
+    /** @param array{product_id: int, stockBefore: int, physicalStock: int, discountQty: int, damagedQty: int, newDeliveryQty: int} $data */
+    private function storeDetail(Visit $visit, Location $outlet, Location $warehouse, Location $damagedLocation, array $data): void
     {
         $outletStock = $this->stock($data['product_id'], $outlet->id);
         $warehouseStock = $this->stock($data['product_id'], $warehouse->id);
@@ -104,42 +104,55 @@ class SaveVisit
         }
 
         if ($data['stockBefore'] === 0
-            && ($data['physicalStock'] !== 0 || $data['returnedQty'] !== 0 || $data['expiredQty'] !== 0)) {
+            && ($data['physicalStock'] !== 0 || $data['discountQty'] !== 0 || $data['damagedQty'] !== 0)) {
             throw new LogicException('Produk baru hanya dapat diisi pada new delivery qty.');
         }
 
-        if ($data['stockBefore'] < $data['physicalStock'] + $data['expiredQty']) {
-            throw new LogicException('Physical stock dan expired tidak boleh melebihi stock before.');
+        if ($data['stockBefore'] < $data['physicalStock'] + $data['damagedQty']) {
+            throw new LogicException('Stok fisik dan produk rusak tidak boleh melebihi stok sebelum.');
         }
 
-        if ($data['returnedQty'] > $data['physicalStock']) {
-            throw new LogicException('Returned qty tidak boleh melebihi physical stock.');
+        $soldQty = $data['stockBefore'] - $data['physicalStock'] - $data['damagedQty'];
+
+        if ($data['discountQty'] > $soldQty) {
+            throw new LogicException('Jumlah diskon tidak boleh melebihi jumlah produk terjual.');
         }
 
-        if ($data['newDeliveryQty'] > $warehouseStock->stock + $data['returnedQty']) {
-            throw new LogicException('Stock warehouse tidak mencukupi untuk new delivery.');
+        if ($data['newDeliveryQty'] > $warehouseStock->stock) {
+            throw new LogicException('Stok gudang tidak mencukupi untuk pengiriman baru.');
         }
 
-        $detail = $visit->details()->create($data);
+        $detail = $visit->details()->create([
+            ...$data,
+            'returnedQty' => 0,
+            'expiredQty' => 0,
+        ]);
         $detail->setRelation('visit', $visit);
-        $soldQty = $data['stockBefore'] - $data['physicalStock'] - $data['expiredQty'];
+        $regularSaleQty = $soldQty - $data['discountQty'];
 
-        $this->movement($detail, 'sale', $soldQty, $outlet->id, null);
-        $this->movement($detail, 'return', $data['returnedQty'], $outlet->id, $warehouse->id);
-        $this->movement($detail, 'expired', $data['expiredQty'], $outlet->id, $expiredLocation->id);
+        $this->movement($detail, 'sale', $regularSaleQty, $outlet->id, null);
+        $this->movement($detail, 'discount', $data['discountQty'], $outlet->id, null, 10000, 10000);
+        $this->movement($detail, 'damaged', $data['damagedQty'], $outlet->id, $damagedLocation->id);
         $this->movement($detail, 'transfer', $data['newDeliveryQty'], $warehouse->id, $outlet->id);
 
-        $finalOutletStock = $data['physicalStock'] - $data['returnedQty'] + $data['newDeliveryQty'];
+        $finalOutletStock = $data['physicalStock'] + $data['newDeliveryQty'];
         $outletStock->update(['stock' => $finalOutletStock]);
-        $warehouseStock->increment('stock', $data['returnedQty'] - $data['newDeliveryQty']);
+        $warehouseStock->decrement('stock', $data['newDeliveryQty']);
 
-        if ($data['expiredQty'] > 0) {
-            $this->changeStock($data['product_id'], $expiredLocation->id, $data['expiredQty']);
+        if ($data['damagedQty'] > 0) {
+            $this->changeStock($data['product_id'], $damagedLocation->id, $data['damagedQty']);
         }
     }
 
-    private function movement(VisitDetail $detail, string $type, int $qty, ?int $from, ?int $to): void
-    {
+    private function movement(
+        VisitDetail $detail,
+        string $type,
+        int $qty,
+        ?int $from,
+        ?int $to,
+        ?int $transferPrice = null,
+        ?int $sellPrice = null,
+    ): void {
         if ($qty === 0) {
             return;
         }
@@ -152,8 +165,8 @@ class SaveVisit
             'product_id' => $detail->product_id,
             'qty' => $qty,
             'unit_cost' => $product->costPrice,
-            'unit_transfer_price' => $product->transferPrice,
-            'unit_sell_price' => $product->salePrice,
+            'unit_transfer_price' => $transferPrice ?? $product->transferPrice,
+            'unit_sell_price' => $sellPrice ?? $product->salePrice,
             'from_location_id' => $from,
             'to_location_id' => $to,
             'reference_no' => $detail->visit->visit_no,

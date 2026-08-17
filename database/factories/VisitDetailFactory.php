@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
+use App\Models\Visit;
 use App\Models\VisitDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,12 +20,14 @@ class VisitDetailFactory extends Factory
     public function definition(): array
     {
         return [
-            'visit_id' => \App\Models\Visit::factory(),
-            'product_id' => \App\Models\Product::factory(),
+            'visit_id' => Visit::factory(),
+            'product_id' => Product::factory(),
             'stockBefore' => $this->faker->numberBetween(0, 100),
             'physicalStock' => $this->faker->numberBetween(0, 100),
-            'returnedQty' => $this->faker->numberBetween(0, 20),
-            'expiredQty' => $this->faker->numberBetween(0, 10),
+            'returnedQty' => 0,
+            'discountQty' => $this->faker->numberBetween(0, 20),
+            'expiredQty' => 0,
+            'damagedQty' => $this->faker->numberBetween(0, 10),
             'newDeliveryQty' => $this->faker->numberBetween(0, 30),
         ];
     }

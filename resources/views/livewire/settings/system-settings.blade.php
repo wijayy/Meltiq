@@ -1,10 +1,11 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <section class="w-full">
     @include('partials.settings-heading')
 
     <x-settings.layout heading="System" subheading="Atur location utama yang digunakan oleh sistem inventory.">
         <form wire:submit="save" class="space-y-6">
             <flux:callout icon="information-circle" color="zinc">
-                Lokasi yang dipilih sebagai Gudang Utama dan Lokasi Kedaluwarsa tidak dapat dinonaktifkan atau diubah tipenya.
+                Lokasi yang dipilih sebagai Gudang Utama dan Lokasi Rusak tidak dapat dinonaktifkan atau diubah tipenya.
             </flux:callout>
 
             <flux:select wire:model="defaultWarehouseId" label="Gudang Utama" required>
@@ -16,10 +17,10 @@
                 @endforeach
             </flux:select>
 
-            <flux:select wire:model="expiredLocationId" label="Lokasi Kedaluwarsa" required>
+            <flux:select wire:model="damagedLocationId" label="Lokasi Rusak" required>
                 <flux:select.option value="">Pilih virtual location</flux:select.option>
-                @foreach ($this->expiredLocations as $location)
-                    <flux:select.option wire:key="setting-expired-{{ $location->id }}" value="{{ $location->id }}">
+                @foreach ($this->damagedLocations as $location)
+                    <flux:select.option wire:key="setting-damaged-{{ $location->id }}" value="{{ $location->id }}">
                         {{ $location->name }}
                     </flux:select.option>
                 @endforeach
@@ -31,3 +32,4 @@
         </form>
     </x-settings.layout>
 </section>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

@@ -131,12 +131,12 @@ class BuildFinancialReportExcel
                 ['Keterangan', 'Nilai'],
                 [
                     ['Omzet', $report['summary']['revenue']],
-                    ['HPP', $report['summary']['cost_of_goods_sold']],
+                    ['Nilai Terjual', $report['summary']['cost_of_goods_sold']],
                     ['Laba Kotor', $report['summary']['gross_profit']],
                     ['Margin Kotor (%)', $report['summary']['gross_margin']],
                     ['Nilai Produksi', $report['summary']['production_value']],
                     ['Nilai Pengiriman', $report['summary']['transfer_value']],
-                    ['Kerugian Kedaluwarsa', $report['summary']['loss_value']],
+                    ['Kerugian Produk Rusak', $report['summary']['loss_value']],
                     ['Kontribusi Bersih', $report['summary']['net_contribution']],
                     ['Nilai Persediaan', $report['summary']['inventory_cost_value']],
                 ],
@@ -144,7 +144,7 @@ class BuildFinancialReportExcel
             ],
             'sales' => [
                 'Penjualan',
-                ['Produk', 'SKU', 'Terjual', 'Omzet', 'HPP', 'Laba Kotor', 'Margin Outlet'],
+                ['Produk', 'SKU', 'Terjual', 'Omzet', 'Nilai Terjual', 'Laba Kotor', 'Margin Outlet'],
                 $this->rows($report['sales'], ['product', 'sku', 'quantity', 'revenue', 'cost_of_goods_sold', 'gross_profit', 'outlet_margin']),
                 ['D', 'E', 'F', 'G'],
             ],
@@ -161,7 +161,7 @@ class BuildFinancialReportExcel
                 ['E', 'F', 'G'],
             ],
             'losses' => [
-                'Kedaluwarsa',
+                'Produk Rusak',
                 ['Produk', 'SKU', 'Jumlah', 'Nilai Kerugian'],
                 $this->rows($report['losses'], ['product', 'sku', 'quantity', 'value']),
                 ['D'],

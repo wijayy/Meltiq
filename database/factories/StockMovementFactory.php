@@ -21,7 +21,7 @@ class StockMovementFactory extends Factory
     {
         return [
             'movement_date' => $this->faker->dateTime(),
-            'movement_type' => $this->faker->randomElement(['production', 'transfer', 'sale', 'return', 'expired', 'adjustment']),
+            'movement_type' => $this->faker->randomElement(['production', 'transfer', 'sale', 'discount', 'damaged', 'adjustment']),
             'product_id' => Product::factory(),
             'qty' => $this->faker->numberBetween(1, 100),
             'unit_cost' => $this->faker->numberBetween(5000, 20000),

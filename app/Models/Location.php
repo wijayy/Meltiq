@@ -3,16 +3,17 @@
 namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
+use Database\Factories\LocationFactory;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Guarded(['id'])]
 class Location extends Model
 {
-    /** @use HasFactory<\Database\Factories\LocationFactory> */
+    /** @use HasFactory<LocationFactory> */
     use HasFactory, Sluggable;
 
     public function getRouteKeyName(): string
@@ -39,7 +40,7 @@ class Location extends Model
     public function isSystemLocation(): bool
     {
         return Setting::query()
-            ->whereIn('key', ['default_warehouse_location', 'default_expired_location'])
+            ->whereIn('key', ['default_warehouse_location', 'default_expired_location', 'default_damaged_location'])
             ->where('value', (string) $this->id)
             ->exists();
     }
@@ -62,8 +63,8 @@ class Location extends Model
     {
         return [
             'slug' => [
-                'source' => 'name'
-            ]
+                'source' => 'name',
+            ],
         ];
     }
 

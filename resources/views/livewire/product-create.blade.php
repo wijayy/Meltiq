@@ -1,3 +1,4 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <div>
     <flux:modal name="product-create" class="max-w-2xl">
         <form wire:submit="save" class="space-y-5">
@@ -44,3 +45,4 @@
         </form>
     </flux:modal>
 </div>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

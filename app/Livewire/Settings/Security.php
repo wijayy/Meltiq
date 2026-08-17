@@ -179,6 +179,7 @@ class Security extends Component
     /**
      * Enable two-factor authentication for the user.
      */
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function enable(EnableTwoFactorAuthentication $enableTwoFactorAuthentication): void
     {
         $enableTwoFactorAuthentication(auth()->user());
@@ -228,6 +229,8 @@ class Security extends Component
     /**
      * Confirm two-factor authentication for the user.
      */
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
+
     public function confirmTwoFactor(ConfirmTwoFactorAuthentication $confirmTwoFactorAuthentication): void
     {
         $this->validate();

@@ -22,8 +22,8 @@ class BuildStockExcel
      *     location_type: string,
      *     physical: int,
      *     sales: int,
-     *     returned: int,
-     *     expired: int,
+     *     discounted: int,
+     *     damaged: int,
      *     total: int
      * }>  $stocks
      * @param  array{stock_time: string, product: string, location: string, exported_at: string}  $filters
@@ -43,7 +43,7 @@ class BuildStockExcel
             ['Jumlah Baris', $stocks->count()],
         ], null, 'A3');
         $sheet->fromArray(
-            ['No', 'Lokasi', 'Produk', 'SKU', 'Kedaluwarsa', 'Dikembalikan', 'Fisik', 'Terjual', 'Total'],
+            ['No', 'Lokasi', 'Produk', 'SKU', 'Rusak', 'Diskon', 'Fisik', 'Terjual', 'Total'],
             null,
             'A9',
         );
@@ -54,8 +54,8 @@ class BuildStockExcel
                 $stock['location_name'].' ('.$this->locationTypeLabel($stock['location_type']).')',
                 $stock['product_name'],
                 $stock['sku'],
-                $stock['expired'],
-                $stock['returned'],
+                $stock['damaged'],
+                $stock['discounted'],
                 $stock['physical'],
                 $stock['sales'],
                 $stock['total'],

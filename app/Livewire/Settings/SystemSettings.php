@@ -17,20 +17,21 @@ class SystemSettings extends Component
 {
     public string $defaultWarehouseId = '';
 
-    public string $expiredLocationId = '';
+    public string $damagedLocationId = '';
 
     public function mount(): void
     {
         $this->defaultWarehouseId = (string) Setting::query()
             ->where('key', 'default_warehouse_location')
             ->value('value');
-        $this->expiredLocationId = (string) Setting::query()
-            ->where('key', 'default_expired_location')
+        $this->damagedLocationId = (string) Setting::query()
+            ->where('key', 'default_damaged_location')
             ->value('value');
     }
 
     /** @return Collection<int, Location> */
     #[Computed]
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function warehouses(): Collection
     {
         return Location::query()->active()->where('type', 'warehouse')->orderBy('name')->get(['id', 'name']);
@@ -38,7 +39,7 @@ class SystemSettings extends Component
 
     /** @return Collection<int, Location> */
     #[Computed]
-    public function expiredLocations(): Collection
+    public function damagedLocations(): Collection
     {
         return Location::query()->active()->where('type', 'virtual')->orderBy('name')->get(['id', 'name']);
     }
@@ -51,23 +52,25 @@ class SystemSettings extends Component
                 'integer',
                 Rule::exists('locations', 'id')->where(fn ($query) => $query->where('type', 'warehouse')->where('isActive', true)),
             ],
-            'expiredLocationId' => [
+            'damagedLocationId' => [
                 'required',
                 'integer',
                 Rule::exists('locations', 'id')->where(fn ($query) => $query->where('type', 'virtual')->where('isActive', true)),
             ],
         ], attributes: [
             'defaultWarehouseId' => 'default warehouse',
-            'expiredLocationId' => 'expired location',
+            'damagedLocationId' => 'lokasi rusak',
         ]);
 
         app(SaveSystemSettings::class)->handle(
             Location::query()->findOrFail((int) $validated['defaultWarehouseId']),
-            Location::query()->findOrFail((int) $validated['expiredLocationId']),
+            Location::query()->findOrFail((int) $validated['damagedLocationId']),
         );
 
         session()->flash('success', 'Konfigurasi sistem berhasil disimpan.');
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function render(): View
     {

@@ -66,12 +66,13 @@ class StockIndex extends Component
      *     location_type: string,
      *     physical: int,
      *     sales: int,
-     *     returned: int,
-     *     expired: int,
+     *     discounted: int,
+     *     damaged: int,
      *     total: int
      * }>
      */
     #[Computed]
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function stocks(): Collection
     {
         $at = $this->selectedDateTime !== ''
@@ -114,6 +115,8 @@ class StockIndex extends Component
             ->orderBy('name')
             ->get(['id', 'name', 'type', 'slug']);
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function exportExcel(): StreamedResponse
     {

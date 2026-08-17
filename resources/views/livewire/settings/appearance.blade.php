@@ -1,3 +1,4 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <section class="w-full">
     @include('partials.settings-heading')
 
@@ -11,3 +12,4 @@
         </flux:radio.group>
     </x-settings.layout>
 </section>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

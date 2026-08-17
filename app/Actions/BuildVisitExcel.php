@@ -68,12 +68,15 @@ class BuildVisitExcel
                 'font' => ['bold' => true],
                 'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'FCE4DE']],
             ]);
-            $sheet->fromArray(['No', 'Produk', 'SKU', 'Stok Sebelum', 'Stok Fisik', 'Terjual', 'Dikembalikan', 'Kedaluwarsa', 'Pengiriman Baru', 'Stok Akhir'], null, 'A'.($detailHeaderRow + 1));
+            $sheet->fromArray(['No', 'Produk', 'SKU', 'Stok Sebelum', 'Stok Fisik', 'Terjual Normal', 'Diskon', 'Rusak', 'Pengiriman Baru', 'Stok Akhir'], null, 'A'.($detailHeaderRow + 1));
             $sheet->getStyle('A'.($detailHeaderRow + 1).':J'.($detailHeaderRow + 1))->getFont()->setBold(true);
 
             $detailRow = $detailHeaderRow + 2;
             $visit->details->each(function (VisitDetail $detail, int $index) use ($sheet, &$detailRow): void {
-                $sold = $detail->stockBefore - $detail->physicalStock - $detail->expiredQty;
+                $damaged = $detail->damagedQty + $detail->expiredQty;
+                $sold = $detail->stockBefore - $detail->physicalStock - $damaged;
+                $discounted = $detail->discountQty;
+                $regularSale = $sold - $discounted;
                 $finalStock = $detail->physicalStock - $detail->returnedQty + $detail->newDeliveryQty;
 
                 $sheet->fromArray([
@@ -82,9 +85,9 @@ class BuildVisitExcel
                     $detail->product->sku,
                     $detail->stockBefore,
                     $detail->physicalStock,
-                    $sold,
-                    $detail->returnedQty,
-                    $detail->expiredQty,
+                    $regularSale,
+                    $discounted,
+                    $damaged,
                     $detail->newDeliveryQty,
                     $finalStock,
                 ], null, 'A'.$detailRow);

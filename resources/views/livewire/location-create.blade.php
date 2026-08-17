@@ -1,10 +1,11 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <div>
     <flux:modal name="location-create" class="max-w-lg">
         <form wire:submit="save" class="space-y-5">
             <div>
                 <flux:heading size="lg" class="text-mine-400 dark:text-mine-100">{{ $title }}</flux:heading>
                 <flux:text class="mt-1 text-mine-300 dark:text-mine-200">
-                    Gudang menyimpan stok utama, outlet untuk konsinyasi, dan virtual untuk produk kedaluwarsa.
+                    Gudang menyimpan stok utama, outlet untuk konsinyasi, dan virtual untuk produk rusak.
                 </flux:text>
             </div>
 
@@ -13,7 +14,7 @@
             <flux:select wire:model="type" label="Tipe Lokasi" required>
                 <flux:select.option value="warehouse">Gudang</flux:select.option>
                 <flux:select.option value="outlet">Outlet</flux:select.option>
-                <flux:select.option value="virtual">Virtual (Kedaluwarsa)</flux:select.option>
+                <flux:select.option value="virtual">Virtual (Rusak)</flux:select.option>
             </flux:select>
 
             <div class="flex justify-end gap-2 border-t border-mine-200 pt-4 dark:border-mine-400">
@@ -23,3 +24,4 @@
         </form>
     </flux:modal>
 </div>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

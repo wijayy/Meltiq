@@ -108,6 +108,32 @@ it('keeps transaction values when the product master prices change', function ()
         ->and($movement->unit_sell_price)->toBe(10000);
 });
 
+it('attributes discounted sales entirely to Meltiq with no outlet margin', function () {
+    $product = Product::factory()->create(['costPrice' => 6000, 'transferPrice' => 8000, 'salePrice' => 15000]);
+    $outlet = Location::factory()->create(['type' => 'outlet']);
+
+    StockMovement::factory()->create([
+        'movement_date' => now(),
+        'movement_type' => 'discount',
+        'product_id' => $product->id,
+        'from_location_id' => $outlet->id,
+        'to_location_id' => null,
+        'qty' => 3,
+        'unit_cost' => 6000,
+        'unit_transfer_price' => 10000,
+        'unit_sell_price' => 10000,
+    ]);
+
+    $report = app(GetFinancialReport::class)->handle(now()->toDateString(), now()->toDateString());
+    $sale = $report['sales']->sole();
+
+    expect($sale['quantity'])->toBe(3)
+        ->and($sale['revenue'])->toBe(30000)
+        ->and($sale['cost_of_goods_sold'])->toBe(18000)
+        ->and($sale['gross_profit'])->toBe(12000)
+        ->and($sale['outlet_margin'])->toBe(0);
+});
+
 it('renders the financial report for an authenticated user', function () {
     $this->actingAs(User::factory()->create());
 

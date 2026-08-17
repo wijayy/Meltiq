@@ -1,3 +1,4 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
 
@@ -37,7 +38,7 @@
                     @foreach ([
                         ['label' => 'Gudang', 'value' => $this->stockByLocationType['warehouse'], 'color' => 'bg-mine-400'],
                         ['label' => 'Outlet', 'value' => $this->stockByLocationType['outlet'], 'color' => 'bg-mine-300'],
-                        ['label' => 'Kedaluwarsa', 'value' => $this->stockByLocationType['virtual'], 'color' => 'bg-red-500'],
+                        ['label' => 'Rusak', 'value' => $this->stockByLocationType['virtual'], 'color' => 'bg-red-500'],
                     ] as $stock)
                         @php($percentage = $this->metrics['total_stock'] > 0 ? ($stock['value'] / $this->metrics['total_stock']) * 100 : 0)
                         <div>
@@ -97,3 +98,4 @@
         </div>
     </flux:sidebar-content>
 </div>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

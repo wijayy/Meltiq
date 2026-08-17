@@ -19,6 +19,7 @@ class LocationCreate extends Component
 
     public string $type = 'outlet';
 
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     #[On('createLocation')]
     public function openCreateModal(): void
     {
@@ -51,22 +52,26 @@ class LocationCreate extends Component
             ? Location::query()->findOrFail($this->locationId)
             : null;
 
-        if ($location
+        if (
+            $location
             && $location->type !== $validated['type']
-            && $location->isSystemLocation()) {
+            && $location->isSystemLocation()
+        ) {
             throw ValidationException::withMessages([
                 'type' => 'Tipe location tidak dapat diubah karena sedang digunakan oleh konfigurasi sistem.',
             ]);
         }
 
-        if ($location
+        if (
+            $location
             && in_array($location->type, ['warehouse', 'virtual'], true)
             && $location->type !== $validated['type']
-            && Location::query()->active()->where('type', $location->type)->count() <= 1) {
+            && Location::query()->active()->where('type', $location->type)->count() <= 1
+        ) {
             throw ValidationException::withMessages([
                 'type' => $location->type === 'warehouse'
                     ? 'Minimal satu warehouse harus tetap tersedia.'
-                    : 'Lokasi virtual expired harus tetap tersedia.',
+                    : 'Lokasi virtual untuk produk rusak harus tetap tersedia.',
             ]);
         }
 
@@ -83,6 +88,8 @@ class LocationCreate extends Component
         $this->dispatch('location-saved', message: $message);
         $this->resetForm();
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function closeModal(): void
     {

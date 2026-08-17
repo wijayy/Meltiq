@@ -50,6 +50,7 @@ class VisitIndex extends Component
 
     /** @return Collection<int, Visit> */
     #[Computed]
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function visits(): Collection
     {
         return Visit::query()
@@ -87,4 +88,5 @@ class VisitIndex extends Component
     {
         return view('livewire.visit-index');
     }
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 }

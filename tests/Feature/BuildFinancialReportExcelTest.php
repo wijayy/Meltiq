@@ -53,6 +53,7 @@ it('exports only the selected financial report sections', function () {
         ->and($spreadsheet->getSheetNames())->toBe(['Ringkasan', 'Penjualan'])
         ->and($spreadsheet->getSheetByName('Produksi'))->toBeNull()
         ->and($spreadsheet->getSheetByName('Ringkasan')->getCell('B9')->getValue())->toBe(100000)
+        ->and($spreadsheet->getSheetByName('Ringkasan')->getCell('A10')->getValue())->toBe('Nilai Terjual')
         ->and($spreadsheet->getSheetByName('Penjualan')->getCell('A9')->getValue())->toBe('Bolu Kering')
         ->and($spreadsheet->getSheetByName('Penjualan')->getCell('G9')->getValue())->toBe(25000);
 

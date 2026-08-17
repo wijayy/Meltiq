@@ -57,7 +57,7 @@ class LocationIndex extends Component
     public function systemLocationIds(): array
     {
         return Setting::query()
-            ->whereIn('key', ['default_warehouse_location', 'default_expired_location'])
+            ->whereIn('key', ['default_warehouse_location', 'default_expired_location', 'default_damaged_location'])
             ->pluck('value')
             ->map(fn (string $value): int => (int) $value)
             ->all();
@@ -73,6 +73,7 @@ class LocationIndex extends Component
         $this->dispatch('editLocation', id: $id);
     }
 
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function openDeleteModal(int $id): void
     {
         $this->locationId = $id;
@@ -104,6 +105,8 @@ class LocationIndex extends Component
         session()->flash('success', 'Outlet berhasil dinonaktifkan.');
         $this->closeDeleteModal();
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function restoreLocation(int $id): void
     {

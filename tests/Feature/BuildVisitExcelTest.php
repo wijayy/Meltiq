@@ -20,8 +20,8 @@ it('builds visit blocks followed by stock details', function () {
     VisitDetail::factory()->for($visit)->for($product)->create([
         'stockBefore' => 20,
         'physicalStock' => 12,
-        'returnedQty' => 2,
-        'expiredQty' => 3,
+        'discountQty' => 2,
+        'damagedQty' => 3,
         'newDeliveryQty' => 10,
     ]);
     $visits = Visit::query()->with(['location', 'creator', 'details.product'])->get();
@@ -50,8 +50,10 @@ it('builds visit blocks followed by stock details', function () {
         ->and($sheet->getStyle('A1')->getFill()->getStartColor()->getRGB())->toBe('4E2011')
         ->and($sheet->getStyle('A1')->getFont()->getColor()->getRGB())->toBe('FFFFFF')
         ->and($sheet->getCell('B14')->getValue())->toBe($product->name)
-        ->and($sheet->getCell('F14')->getValue())->toBe(5)
-        ->and($sheet->getCell('J14')->getValue())->toBe(20);
+        ->and($sheet->getCell('F14')->getValue())->toBe(3)
+        ->and($sheet->getCell('G14')->getValue())->toBe(2)
+        ->and($sheet->getCell('H14')->getValue())->toBe(3)
+        ->and($sheet->getCell('J14')->getValue())->toBe(22);
 
     unlink($path);
 });

@@ -18,8 +18,8 @@ class GetStockSummaryReport
      *     location_type: string,
      *     physical: int,
      *     sales: int,
-     *     returned: int,
-     *     expired: int,
+     *     discounted: int,
+     *     damaged: int,
      *     total: int
      * }>
      */
@@ -27,7 +27,7 @@ class GetStockSummaryReport
     {
         $stocks = app(GetStockReport::class)->handle($at, $productId, $locationId);
         $movements = StockMovement::query()
-            ->whereIn('movement_type', ['sale', 'return', 'expired'])
+            ->whereIn('movement_type', ['sale', 'discount', 'expired', 'damaged'])
             ->whereNotNull('from_location_id')
             ->when($at, fn ($query) => $query->where('movement_date', '<=', $at))
             ->when($productId, fn ($query) => $query->where('product_id', $productId))
@@ -42,9 +42,11 @@ class GetStockSummaryReport
                 ->get($stock['product_id'].':'.$stock['location_id'], collect())
                 ->keyBy('movement_type');
             $physical = $stock['stock'];
-            $sales = (int) ($movementByType->get('sale')?->getAttribute('total_qty') ?? 0);
-            $returned = (int) ($movementByType->get('return')?->getAttribute('total_qty') ?? 0);
-            $expired = (int) ($movementByType->get('expired')?->getAttribute('total_qty') ?? 0);
+            $regularSales = (int) ($movementByType->get('sale')?->getAttribute('total_qty') ?? 0);
+            $discounted = (int) ($movementByType->get('discount')?->getAttribute('total_qty') ?? 0);
+            $damaged = (int) ($movementByType->get('damaged')?->getAttribute('total_qty') ?? 0)
+                + (int) ($movementByType->get('expired')?->getAttribute('total_qty') ?? 0);
+            $sales = $regularSales + $discounted;
 
             return [
                 'product_id' => $stock['product_id'],
@@ -55,9 +57,9 @@ class GetStockSummaryReport
                 'location_type' => $stock['location_type'],
                 'physical' => $physical,
                 'sales' => $sales,
-                'returned' => $returned,
-                'expired' => $expired,
-                'total' => $physical + $sales + $returned + $expired,
+                'discounted' => $discounted,
+                'damaged' => $damaged,
+                'total' => $physical + $sales + $damaged,
             ];
         });
     }

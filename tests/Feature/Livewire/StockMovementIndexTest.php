@@ -15,7 +15,7 @@ it('filters movements and calculates net movement by product and location', func
     $warehouse = Location::factory()->create(['name' => 'Warehouse Utama']);
     $outlet = Location::factory()->create(['name' => 'Outlet Renon']);
     $expired = Location::factory()->create(['name' => 'Expired', 'type' => 'virtual']);
-    Setting::query()->updateOrCreate(['key' => 'default_expired_location'], ['value' => (string) $expired->id]);
+    Setting::query()->updateOrCreate(['key' => 'default_damaged_location'], ['value' => (string) $expired->id]);
 
     StockMovement::factory()->create([
         'movement_date' => '2026-07-10 10:00:00',
@@ -27,7 +27,7 @@ it('filters movements and calculates net movement by product and location', func
     ]);
     StockMovement::factory()->create([
         'movement_date' => '2026-07-10 11:00:00',
-        'movement_type' => 'expired',
+        'movement_type' => 'damaged',
         'product_id' => $product->id,
         'from_location_id' => $outlet->id,
         'to_location_id' => $expired->id,

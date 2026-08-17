@@ -6,12 +6,12 @@ use App\Models\Location;
 use App\Models\Product;
 use App\Models\StockMovement;
 
-it('summarizes physical sold returned and expired stock per product and location', function () {
+it('summarizes physical sold discounted and damaged stock per product and location', function () {
     $product = Product::factory()->create();
     $outlet = Location::factory()->create(['type' => 'outlet']);
     CurrentStock::factory()->for($product)->for($outlet)->create(['stock' => 8]);
 
-    foreach (['sale' => 6, 'return' => 2, 'expired' => 1] as $type => $qty) {
+    foreach (['sale' => 6, 'discount' => 2, 'damaged' => 1] as $type => $qty) {
         StockMovement::factory()->create([
             'movement_date' => now()->subHour(),
             'movement_type' => $type,
@@ -28,8 +28,8 @@ it('summarizes physical sold returned and expired stock per product and location
     )->sole();
 
     expect($row['physical'])->toBe(8)
-        ->and($row['sales'])->toBe(6)
-        ->and($row['returned'])->toBe(2)
-        ->and($row['expired'])->toBe(1)
+        ->and($row['sales'])->toBe(8)
+        ->and($row['discounted'])->toBe(2)
+        ->and($row['damaged'])->toBe(1)
         ->and($row['total'])->toBe(17);
 });

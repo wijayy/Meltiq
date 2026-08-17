@@ -41,6 +41,7 @@ class ProductCreate extends Component
     }
 
     #[On('createProduct')]
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function openCreateModal(): void
     {
         $this->resetForm();
@@ -106,6 +107,8 @@ class ProductCreate extends Component
         $this->dispatch('product-saved', message: $message, categoryId: $product->category_id);
         $this->resetForm();
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function closeModal(): void
     {

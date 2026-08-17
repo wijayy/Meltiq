@@ -16,6 +16,7 @@ class RecoveryCodes extends Component
     /**
      * Mount the component.
      */
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function mount(): void
     {
         $this->loadRecoveryCodes();
@@ -48,4 +49,5 @@ class RecoveryCodes extends Component
             }
         }
     }
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 }

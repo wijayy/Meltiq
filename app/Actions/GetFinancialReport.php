@@ -27,7 +27,7 @@ class GetFinancialReport
             ))
             ->get();
 
-        $sales = $movements->where('movement_type', 'sale')
+        $sales = $movements->whereIn('movement_type', ['sale', 'discount'])
             ->when($locationId, fn (Collection $rows) => $rows->where('from_location_id', $locationId))
             ->groupBy('product_id')
             ->map(function (Collection $rows): array {
@@ -82,7 +82,7 @@ class GetFinancialReport
                 ];
             })->sortByDesc('transfer_value')->values();
 
-        $losses = $movements->where('movement_type', 'expired')
+        $losses = $movements->whereIn('movement_type', ['expired', 'damaged'])
             ->when($locationId, fn (Collection $rows) => $rows->where('from_location_id', $locationId))
             ->groupBy('product_id')
             ->map(function (Collection $rows): array {

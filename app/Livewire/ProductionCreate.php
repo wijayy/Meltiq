@@ -81,6 +81,7 @@ class ProductionCreate extends Component
         return $warehouse;
     }
 
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function addDetail(): void
     {
         $this->details[] = [
@@ -149,6 +150,8 @@ class ProductionCreate extends Component
         session()->flash('success', $this->production ? 'Produksi berhasil diubah.' : 'Produksi berhasil disimpan dan stok gudang telah diperbarui.');
         $this->redirectRoute('productions.index', navigate: true);
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function render(): View
     {

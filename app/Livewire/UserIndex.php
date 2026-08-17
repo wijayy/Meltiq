@@ -46,6 +46,7 @@ class UserIndex extends Component
         unset($this->users);
     }
 
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function openCreateModal(): void
     {
         $this->resetForm();
@@ -108,6 +109,8 @@ class UserIndex extends Component
         $this->resetForm();
         unset($this->users);
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     public function closeModal(): void
     {

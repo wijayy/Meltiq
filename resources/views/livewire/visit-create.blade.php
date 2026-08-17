@@ -1,3 +1,4 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
     <flux:sidebar-header>
@@ -24,9 +25,10 @@
             <flux:callout icon="information-circle" color="zinc">
                 <div class="space-y-1 text-sm">
                     <div><strong>Produk outlet:</strong> otomatis dimuat dan wajib diisi. Fisik adalah stok layak
-                        jual yang ditemukan; kedaluwarsa dicatat terpisah.</div>
-                    <div><strong>Perhitungan:</strong> Terjual = Stok Sebelum − Fisik − Kedaluwarsa. Stok akhir =
-                        Fisik − Dikembalikan + Pengiriman Baru.</div>
+                        jual yang ditemukan; produk rusak dicatat terpisah.</div>
+                    <div><strong>Perhitungan:</strong> Terjual = Stok Sebelum − Fisik − Rusak. Diskon adalah bagian
+                        dari produk terjual dengan harga Rp10.000 yang menjadi penjualan Meltiq. Stok akhir = Fisik +
+                        Pengiriman Baru.</div>
                     <div><strong>Stok Gudang:</strong> hanya informasi stok yang tersedia di gudang untuk membantu
                         menentukan delivery.</div>
                     <div><strong>Produk baru:</strong> gunakan Tambah Produk dan isi Pengiriman Baru saja; kolom stok
@@ -40,8 +42,8 @@
                 <div class="w-36 text-center">Stok Gudang</div>
                 <div class="w-28 text-center">Stok Sebelum</div>
                 <div class="w-28 text-center">Fisik</div>
-                <div class="w-28 text-center">Dikembalikan</div>
-                <div class="w-28 text-center">Kedaluwarsa</div>
+                <div class="w-28 text-center">Diskon</div>
+                <div class="w-28 text-center">Rusak</div>
                 <div class="w-28 text-center">Pengiriman</div>
                 <div class="w-20 text-center">Aksi</div>
             </div>
@@ -71,11 +73,11 @@
                             min="0" :readonly="!$detail['isOutletStock']" />
                     </div>
                     <div class="w-28">
-                        <flux:input wire:model="details.{{ $index }}.returnedQty" type="number" min="0"
+                        <flux:input wire:model="details.{{ $index }}.discountQty" type="number" min="0"
                             :readonly="!$detail['isOutletStock']" />
                     </div>
                     <div class="w-28">
-                        <flux:input wire:model="details.{{ $index }}.expiredQty" type="number" min="0"
+                        <flux:input wire:model="details.{{ $index }}.damagedQty" type="number" min="0"
                             :readonly="!$detail['isOutletStock']" />
                     </div>
                     <div class="w-28">
@@ -106,3 +108,4 @@
         </form>
     </flux:sidebar-content>
 </div>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

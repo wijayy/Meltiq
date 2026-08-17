@@ -1,3 +1,4 @@
+{{-- BEGIN KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}
 <div class="flex h-[calc(100dvh-8rem)] flex-col gap-4 overflow-hidden lg:h-[calc(100dvh-4rem)]">
     <x-slot name="title">{{ $title }}</x-slot>
     <flux:sidebar-header>
@@ -13,11 +14,14 @@
         </div>
         <div><flux:text>Catatan</flux:text><div class="mt-1 rounded-lg border border-mine-200 p-3 dark:border-mine-400">{{ $visit->notes ?: '—' }}</div></div>
         <flux:heading size="lg" class="pt-4 text-mine-400 dark:text-mine-100">Detail Stok</flux:heading>
-        <div class="flex min-w-7xl gap-3 text-sm font-semibold"><div class="w-8">#</div><div class="min-w-64 flex-1">Produk</div><div class="w-28 text-right">Sebelum</div><div class="w-28 text-right">Fisik</div><div class="w-28 text-right">Terjual</div><div class="w-28 text-right">Dikembalikan</div><div class="w-28 text-right">Kedaluwarsa</div><div class="w-28 text-right">Pengiriman</div><div class="w-28 text-right">Stok Akhir</div></div>
+        <div class="flex min-w-7xl gap-3 text-sm font-semibold"><div class="w-8">#</div><div class="min-w-64 flex-1">Produk</div><div class="w-28 text-right">Sebelum</div><div class="w-28 text-right">Fisik</div><div class="w-28 text-right">Terjual Normal</div><div class="w-28 text-right">Diskon</div><div class="w-28 text-right">Rusak</div><div class="w-28 text-right">Pengiriman</div><div class="w-28 text-right">Stok Akhir</div></div>
         @foreach ($visit->details as $index => $detail)
-            @php($sold = $detail->stockBefore - $detail->physicalStock - $detail->expiredQty)
+            @php($damaged = $detail->damagedQty + $detail->expiredQty)
+            @php($sold = $detail->stockBefore - $detail->physicalStock - $damaged)
+            @php($regularSale = $sold - $detail->discountQty)
             @php($finalStock = $detail->physicalStock - $detail->returnedQty + $detail->newDeliveryQty)
-            <div class="flex min-w-7xl gap-3 border-t border-mine-200 pt-2 text-sm dark:border-mine-400"><div class="w-8">{{ $index + 1 }}</div><div class="min-w-64 flex-1"><div class="font-semibold">{{ $detail->product->name }}</div><div class="text-xs text-zinc-500">{{ $detail->product->sku }}</div></div><div class="w-28 text-right">{{ number_format($detail->stockBefore) }}</div><div class="w-28 text-right">{{ number_format($detail->physicalStock) }}</div><div class="w-28 text-right">{{ number_format($sold) }}</div><div class="w-28 text-right">{{ number_format($detail->returnedQty) }}</div><div class="w-28 text-right">{{ number_format($detail->expiredQty) }}</div><div class="w-28 text-right">{{ number_format($detail->newDeliveryQty) }}</div><div class="w-28 text-right font-semibold">{{ number_format($finalStock) }}</div></div>
+            <div class="flex min-w-7xl gap-3 border-t border-mine-200 pt-2 text-sm dark:border-mine-400"><div class="w-8">{{ $index + 1 }}</div><div class="min-w-64 flex-1"><div class="font-semibold">{{ $detail->product->name }}</div><div class="text-xs text-zinc-500">{{ $detail->product->sku }}</div></div><div class="w-28 text-right">{{ number_format($detail->stockBefore) }}</div><div class="w-28 text-right">{{ number_format($detail->physicalStock) }}</div><div class="w-28 text-right">{{ number_format($regularSale) }}</div><div class="w-28 text-right">{{ number_format($detail->discountQty) }}</div><div class="w-28 text-right">{{ number_format($damaged) }}</div><div class="w-28 text-right">{{ number_format($detail->newDeliveryQty) }}</div><div class="w-28 text-right font-semibold">{{ number_format($finalStock) }}</div></div>
         @endforeach
     </flux:sidebar-content>
 </div>
+{{-- END KODE INTI SKRIPSI: TEMPLATE BLADE LIVEWIRE --}}

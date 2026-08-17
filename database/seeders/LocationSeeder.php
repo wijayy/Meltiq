@@ -31,7 +31,7 @@ class LocationSeeder extends Seeder
                 'type' => 'outlet',
             ],
             [
-                'name' => 'Expired',
+                'name' => 'Rusak',
                 'type' => 'virtual',
             ],
         ];

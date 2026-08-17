@@ -22,6 +22,7 @@ class Profile extends Component
     /**
      * Mount the component.
      */
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function mount(): void
     {
         $this->name = Auth::user()->name;
@@ -65,6 +66,8 @@ class Profile extends Component
 
         Flux::toast(text: __('A new verification link has been sent to your email address.'));
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     #[Computed]
     public function hasUnverifiedEmail(): bool

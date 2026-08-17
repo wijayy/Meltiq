@@ -4,14 +4,14 @@ use App\Actions\SaveSystemSettings;
 use App\Models\Location;
 use App\Models\Setting;
 
-it('saves default warehouse and expired location settings', function () {
+it('saves default warehouse and damaged location settings', function () {
     $warehouse = Location::factory()->create(['type' => 'warehouse', 'isActive' => true]);
     $expiredLocation = Location::factory()->create(['type' => 'virtual', 'isActive' => true]);
 
     app(SaveSystemSettings::class)->handle($warehouse, $expiredLocation);
 
     expect(Setting::query()->where('key', 'default_warehouse_location')->value('value'))->toBe((string) $warehouse->id)
-        ->and(Setting::query()->where('key', 'default_expired_location')->value('value'))->toBe((string) $expiredLocation->id);
+        ->and(Setting::query()->where('key', 'default_damaged_location')->value('value'))->toBe((string) $expiredLocation->id);
 });
 
 it('rejects locations with invalid types or inactive state', function () {

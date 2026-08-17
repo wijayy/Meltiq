@@ -19,6 +19,7 @@ class Dashboard extends Component
     public string $title = 'Dasbor';
 
     /** @return array{products: int, locations: int, total_stock: int, users: int, movements_today: int} */
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     #[Computed]
     public function metrics(): array
     {
@@ -61,6 +62,8 @@ class Dashboard extends Component
     }
 
     /** @return Collection<int, Production> */
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
+
     #[Computed]
     public function recentProductions(): Collection
     {

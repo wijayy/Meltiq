@@ -67,6 +67,7 @@ class ProductIndex extends Component
         $this->dispatch('editProduct', id: $id);
     }
 
+    // BEGIN KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
     public function openDeleteModal(string $type, int $id): void
     {
         abort_unless(in_array($type, ['category', 'product'], true), 404);
@@ -91,6 +92,8 @@ class ProductIndex extends Component
             ->filters(['search' => $this->search])
             ->get();
     }
+
+    // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
     /** @return Collection<int, Category> */
     #[Computed]
