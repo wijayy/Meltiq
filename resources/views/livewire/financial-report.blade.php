@@ -13,7 +13,7 @@
 
     <flux:sidebar-content>
         <section
-            class="grid gap-3 rounded-xl border border-mine-200 bg-white p-4 dark:border-mine-400 dark:bg-neutral-700 md:grid-cols-4">
+            class="grid gap-3 rounded-xl border border-mine-200 bg-white p-4 dark:border-mine-400 dark:bg-neutral-700 md:grid-cols-5">
             <flux:input type="date" wire:model.live="dateFrom" label="Dari tanggal" />
             <flux:input type="date" wire:model.live="dateTo" label="Sampai tanggal" />
             <flux:select wire:model.live="productSlug" label="Produk">
@@ -22,6 +22,12 @@
                     <flux:select.option :value="$product->slug">{{ $product->name }} — {{ $product->sku }}
                     </flux:select.option>
                 @endforeach
+            </flux:select>
+            <flux:select wire:model.live="movementStatus" label="Status">
+                <flux:select.option value="">Semua status</flux:select.option>
+                <flux:select.option value="damaged">Rusak</flux:select.option>
+                <flux:select.option value="expired">Kadaluarsa</flux:select.option>
+                <flux:select.option value="return">Pengembalian</flux:select.option>
             </flux:select>
             <flux:select wire:model.live="locationSlug" label="Lokasi">
                 <flux:select.option value="">Semua lokasi</flux:select.option>

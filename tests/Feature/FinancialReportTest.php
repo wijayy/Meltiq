@@ -5,6 +5,7 @@ use App\Livewire\FinancialReport;
 use App\Models\CurrentStock;
 use App\Models\Location;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\StockMovement;
 use App\Models\User;
 use Livewire\Livewire;
@@ -142,6 +143,55 @@ it('renders the financial report for an authenticated user', function () {
         ->assertSee('Laporan Keuangan')
         ->assertSee('Omzet')
         ->assertSee('Nilai Persediaan');
+});
+
+it('filters movements by the selected product status', function (string $status) {
+    $product = Product::factory()->create();
+    $location = Location::factory()->create(['type' => 'outlet']);
+
+    StockMovement::factory()->create([
+        'movement_date' => now(),
+        'movement_type' => $status,
+        'product_id' => $product->id,
+        'from_location_id' => $location->id,
+        'to_location_id' => null,
+        'qty' => 2,
+        'unit_cost' => 5000,
+    ]);
+    StockMovement::factory()->create([
+        'movement_date' => now(),
+        'movement_type' => 'sale',
+        'product_id' => $product->id,
+        'from_location_id' => $location->id,
+        'to_location_id' => null,
+        'qty' => 3,
+        'unit_cost' => 5000,
+        'unit_sell_price' => 10000,
+    ]);
+
+    $report = app(GetFinancialReport::class)->handle(
+        now()->toDateString(),
+        now()->toDateString(),
+        movementStatus: $status,
+    );
+
+    expect($report['sales'])->toBeEmpty()
+        ->and($report['summary']['revenue'])->toBe(0);
+})->with(['damaged', 'expired', 'return']);
+
+it('excludes the configured damaged location from the location filter', function () {
+    $damagedLocation = Location::factory()->create(['type' => 'virtual']);
+    $outlet = Location::factory()->create(['type' => 'outlet']);
+    Setting::query()->updateOrCreate(
+        ['key' => 'default_damaged_location'],
+        ['value' => (string) $damagedLocation->id, 'type' => 'number'],
+    );
+
+    $component = Livewire::actingAs(User::factory()->create())->test(FinancialReport::class);
+
+    expect($component->instance()->locations()->modelKeys())
+        ->toContain($outlet->id)
+        ->not->toContain($damagedLocation->id);
 });
 
 it('downloads only selected financial report sections', function () {

@@ -6,6 +6,7 @@ use App\Actions\BuildFinancialReportExcel;
 use App\Actions\GetFinancialReport;
 use App\Models\Location;
 use App\Models\Product;
+use App\Models\Setting;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\View;
@@ -36,6 +37,9 @@ class FinancialReport extends Component
     #[Url(as: 'location', except: '')]
     public string $locationSlug = '';
 
+    #[Url(as: 'status', except: '')]
+    public string $movementStatus = '';
+
     /** @var array<int, string> */
     public array $exportSections = ['summary', 'sales', 'losses'];
 
@@ -44,6 +48,7 @@ class FinancialReport extends Component
     {
         $this->dateFrom = $this->dateFrom ?: now()->startOfMonth()->toDateString();
         $this->dateTo = $this->dateTo ?: now()->toDateString();
+        $this->normalizeMovementStatus();
     }
 
     /** @return array<string, mixed> */
@@ -62,6 +67,7 @@ class FinancialReport extends Component
             $this->dateTo,
             $productId !== null ? (int) $productId : null,
             $locationId !== null ? (int) $locationId : null,
+            $this->movementStatus,
         );
     }
 
@@ -78,7 +84,27 @@ class FinancialReport extends Component
     #[Computed]
     public function locations(): Collection
     {
-        return Location::query()->orderBy('name')->get(['id', 'name', 'type', 'slug']);
+        $damagedLocationId = Setting::query()
+            ->where('key', 'default_damaged_location')
+            ->value('value');
+
+        return Location::query()
+            ->when($damagedLocationId, fn ($query, string $id) => $query->whereKeyNot((int) $id))
+            ->orderBy('name')
+            ->get(['id', 'name', 'type', 'slug']);
+    }
+
+    public function updatedMovementStatus(): void
+    {
+        $this->normalizeMovementStatus();
+        unset($this->report);
+    }
+
+    private function normalizeMovementStatus(): void
+    {
+        if (! in_array($this->movementStatus, ['', 'damaged', 'expired', 'return'], true)) {
+            $this->movementStatus = '';
+        }
     }
 
     public function exportExcel(): ?StreamedResponse
@@ -119,10 +145,10 @@ class FinancialReport extends Component
         );
     }
 
-public function render(): View
-{
-    return view('livewire.financial-report');
-}
+    public function render(): View
+    {
+        return view('livewire.financial-report');
+    }
 
     public function exception(Throwable $exception, Closure $stopPropagation): void
     {

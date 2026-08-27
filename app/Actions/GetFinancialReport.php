@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 class GetFinancialReport
 {
     /** @return array<string, mixed> */
-    public function handle(string $dateFrom, string $dateTo, ?int $productId = null, ?int $locationId = null): array
+    public function handle(string $dateFrom, string $dateTo, ?int $productId = null, ?int $locationId = null, string $movementStatus = ''): array
     {
         $from = Carbon::parse($dateFrom)->startOfDay();
         $to = Carbon::parse($dateTo)->endOfDay();
@@ -22,6 +22,7 @@ class GetFinancialReport
                 $to,
             ])
             ->when($productId, fn (Builder $query, int $id) => $query->where('product_id', $id))
+            ->when($movementStatus, fn (Builder $query, string $status) => $query->where('movement_type', $status))
             ->when($locationId, fn (Builder $query, int $id) => $query->where(
                 fn (Builder $query) => $query->where('from_location_id', $id)->orWhere('to_location_id', $id),
             ))
