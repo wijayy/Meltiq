@@ -225,8 +225,8 @@ class VisitCreate extends Component
         return $location ?? throw new RuntimeException('Konfigurasi location sistem belum lengkap.');
     }
 
-    public function render(): View
-    {
-        return view('livewire.visit-create');
-    }
+public function render(): View
+{
+    return view('livewire.visit-create');
+}
 }

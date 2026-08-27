@@ -89,8 +89,8 @@ class Dashboard extends Component
             ->get();
     }
 
-    public function render(): View
-    {
-        return view('livewire.dashboard');
-    }
+public function render(): View
+{
+    return view('livewire.dashboard');
+}
 }

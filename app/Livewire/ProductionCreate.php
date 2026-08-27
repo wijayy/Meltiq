@@ -153,8 +153,8 @@ class ProductionCreate extends Component
 
     // END KODE INTI SKRIPSI: FUNGSI INTI LIVEWIRE
 
-    public function render(): View
-    {
-        return view('livewire.production-create');
-    }
+public function render(): View
+{
+    return view('livewire.production-create');
+}
 }

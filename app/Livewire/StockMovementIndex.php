@@ -36,6 +36,9 @@ class StockMovementIndex extends Component
     #[Url(as: 'location', except: '')]
     public string $locationSlug = '';
 
+    #[Url(as: 'type', except: '')]
+    public string $locationType = '';
+
     public function updatedPeriodBegin(): void
     {
         $this->clearComputedData();
@@ -53,6 +56,15 @@ class StockMovementIndex extends Component
 
     public function updatedLocationSlug(): void
     {
+        $this->clearComputedData();
+    }
+
+    public function updatedLocationType(): void
+    {
+        if (! in_array($this->locationType, ['', 'warehouse', 'outlet', 'virtual'], true)) {
+            $this->locationType = '';
+        }
+
         $this->clearComputedData();
     }
 
@@ -83,6 +95,9 @@ class StockMovementIndex extends Component
             ->when($this->locationSlug, fn ($query) => $query->where(fn ($query) => $query
                 ->whereHas('fromLocation', fn ($query) => $query->where('slug', $this->locationSlug))
                 ->orWhereHas('toLocation', fn ($query) => $query->where('slug', $this->locationSlug))))
+            ->when($this->locationType, fn ($query) => $query->where(fn ($query) => $query
+                ->whereHas('fromLocation', fn ($query) => $query->where('type', $this->locationType))
+                ->orWhereHas('toLocation', fn ($query) => $query->where('type', $this->locationType))))
             ->latest('movement_date')
             ->latest('id')
             ->get();
@@ -172,8 +187,9 @@ class StockMovementIndex extends Component
             [
                 'period_begin' => $this->periodBegin !== '' ? Carbon::parse($this->periodBegin)->format('d/m/Y') : 'Awal',
                 'period_end' => $this->periodEnd !== '' ? Carbon::parse($this->periodEnd)->format('d/m/Y') : 'Sekarang',
-                'product' => $product ? $product->name.' — '.$product->sku : 'Semua Produk',
-                'location' => $location ? $location->name.' ('.ucfirst($location->type).')' : 'Semua Lokasi',
+                'product' => $product ? $product->name . ' — ' . $product->sku : 'Semua Produk',
+                'location' => $location ? $location->name . ' (' . ucfirst($location->type) . ')' : 'Semua Lokasi',
+                'location_type' => $this->locationType !== '' ? ucfirst($this->locationType) : 'Semua Tipe',
                 'exported_at' => now()->format('d/m/Y H:i:s'),
             ],
         );
@@ -182,7 +198,7 @@ class StockMovementIndex extends Component
             function () use ($contents): void {
                 echo $contents;
             },
-            'stock-movement-report-'.now()->format('Ymd-His').'.xlsx',
+            'stock-movement-report-' . now()->format('Ymd-His') . '.xlsx',
             ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
         );
     }

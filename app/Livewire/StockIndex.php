@@ -35,6 +35,9 @@ class StockIndex extends Component
     #[Url(as: 'location', except: '')]
     public string $locationSlug = '';
 
+    #[Url(as: 'type', except: '')]
+    public string $locationType = '';
+
     public function updatedSelectedDateTime(): void
     {
         unset($this->stocks);
@@ -47,6 +50,15 @@ class StockIndex extends Component
 
     public function updatedLocationSlug(): void
     {
+        unset($this->stocks);
+    }
+
+    public function updatedLocationType(): void
+    {
+        if (! in_array($this->locationType, ['', 'warehouse', 'outlet', 'virtual'], true)) {
+            $this->locationType = '';
+        }
+
         unset($this->stocks);
     }
 
@@ -92,11 +104,18 @@ class StockIndex extends Component
             return collect();
         }
 
-        return app(GetStockSummaryReport::class)->handle(
+        $stocks = app(GetStockSummaryReport::class)->handle(
             at: $at,
             productId: $productId !== null ? (int) $productId : null,
             locationId: $locationId !== null ? (int) $locationId : null,
         );
+
+        return $stocks
+            ->when(
+                $this->locationType !== '',
+                fn (Collection $stocks): Collection => $stocks->where('location_type', $this->locationType),
+            )
+            ->values();
     }
 
     /** @return EloquentCollection<int, Product> */
@@ -133,6 +152,7 @@ class StockIndex extends Component
             'stock_time' => $stockTime,
             'product' => $product ? $product->name.' — '.$product->sku : 'Semua Produk',
             'location' => $location ? $location->name.' ('.$this->locationTypeLabel($location->type).')' : 'Semua Lokasi',
+            'location_type' => $this->locationType !== '' ? $this->locationTypeLabel($this->locationType) : 'Semua Tipe',
             'exported_at' => now()->format('d/m/Y H:i:s'),
         ]);
         $filename = 'stock-report-'.now()->format('Ymd-His').'.xlsx';

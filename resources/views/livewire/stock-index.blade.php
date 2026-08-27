@@ -41,6 +41,14 @@
                     @endforeach
                 </flux:select>
             </div>
+            <div class="w-full sm:w-64">
+                <flux:select wire:model.live="locationType" label="Tipe">
+                    <flux:select.option value="">Semua Tipe</flux:select.option>
+                    <flux:select.option value="warehouse">Gudang</flux:select.option>
+                    <flux:select.option value="outlet">Outlet</flux:select.option>
+                    <flux:select.option value="virtual">Virtual</flux:select.option>
+                </flux:select>
+            </div>
             @if ($selectedDateTime !== '')
                 <flux:button wire:click="resetDateTime" icon="arrow-path" variant="ghost">Stok Saat Ini</flux:button>
             @endif

@@ -54,3 +54,33 @@ it('filters movements and calculates net movement by product and location', func
             $expired->id => ['increase' => 3, 'decrease' => 0],
         ]]);
 });
+
+it('filters movements by location type', function () {
+    $product = Product::factory()->create();
+    $warehouse = Location::factory()->create(['type' => 'warehouse']);
+    $outlet = Location::factory()->create(['type' => 'outlet']);
+    $virtual = Location::factory()->create(['type' => 'virtual']);
+
+    $warehouseMovement = StockMovement::factory()->create([
+        'product_id' => $product->id,
+        'from_location_id' => $warehouse->id,
+        'to_location_id' => $outlet->id,
+    ]);
+    StockMovement::factory()->create([
+        'product_id' => $product->id,
+        'from_location_id' => $outlet->id,
+        'to_location_id' => $virtual->id,
+    ]);
+
+    $component = Livewire::test(StockMovementIndex::class)
+        ->set('locationType', 'warehouse');
+
+    expect($component->instance()->movements()->modelKeys())
+        ->toBe([$warehouseMovement->id]);
+});
+
+it('resets an invalid movement location type filter', function () {
+    Livewire::test(StockMovementIndex::class)
+        ->set('locationType', 'invalid')
+        ->assertSet('locationType', '');
+});

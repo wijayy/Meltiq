@@ -126,8 +126,8 @@ class LocationIndex extends Component
         unset($this->locations);
     }
 
-    public function render(): View
-    {
-        return view('livewire.location-index');
-    }
+public function render(): View
+{
+    return view('livewire.location-index');
+}
 }

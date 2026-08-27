@@ -77,7 +77,7 @@ class ProductionIndex extends Component
             function () use ($contents): void {
                 echo $contents;
             },
-            'laporan-produksi-'.now()->format('Ymd-His').'.xlsx',
+            'laporan-produksi-' . now()->format('Ymd-His') . '.xlsx',
             ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
         );
     }

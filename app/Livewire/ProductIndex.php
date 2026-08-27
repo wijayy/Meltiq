@@ -180,8 +180,8 @@ class ProductIndex extends Component
         unset($this->categories, $this->products);
     }
 
-    public function render(): View
-    {
-        return view('livewire.product-index');
-    }
+public function render(): View
+{
+    return view('livewire.product-index');
+}
 }

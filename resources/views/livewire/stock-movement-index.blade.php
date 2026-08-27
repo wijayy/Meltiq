@@ -44,6 +44,14 @@
                     @endforeach
                 </flux:select>
             </div>
+            <div class="w-full sm:w-64">
+                <flux:select wire:model.live="locationType" label="Tipe">
+                    <flux:select.option value="">Semua Tipe</flux:select.option>
+                    <flux:select.option value="warehouse">Gudang</flux:select.option>
+                    <flux:select.option value="outlet">Outlet</flux:select.option>
+                    <flux:select.option value="virtual">Virtual</flux:select.option>
+                </flux:select>
+            </div>
         </div>
 
         <div class="flex min-w-6xl items-center gap-4 text-sm font-semibold">
@@ -67,15 +75,17 @@
                     <div class="text-xs text-zinc-500">{{ $movement->product->sku }}</div>
                 </div>
                 <div class="w-28 text-center">
-                    <flux:badge color="zinc" size="sm">{{ match ($movement->movement_type) {
-                        'production' => 'Produksi',
-                        'transfer' => 'Pengiriman',
-                        'sale' => 'Penjualan',
-                        'discount' => 'Diskon',
-                        'damaged', 'expired' => 'Rusak',
-                        'return' => 'Pengembalian Lama',
-                        default => 'Penyesuaian',
-                    } }}</flux:badge>
+                    <flux:badge color="zinc" size="sm">
+                        {{ match ($movement->movement_type) {
+                            'production' => 'Produksi',
+                            'transfer' => 'Pengiriman',
+                            'sale' => 'Penjualan',
+                            'discount' => 'Diskon',
+                            'damaged', 'expired' => 'Rusak',
+                            'return' => 'Pengembalian Lama',
+                            default => 'Penyesuaian',
+                        } }}
+                    </flux:badge>
                 </div>
                 <div class="w-48">{{ $movement->fromLocation?->name ?? '—' }}</div>
                 <div class="w-48">{{ $movement->toLocation?->name ?? '—' }}</div>

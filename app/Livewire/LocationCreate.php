@@ -104,8 +104,8 @@ class LocationCreate extends Component
         $this->resetValidation();
     }
 
-    public function render(): View
-    {
-        return view('livewire.location-create');
-    }
+public function render(): View
+{
+    return view('livewire.location-create');
+}
 }

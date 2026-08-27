@@ -119,10 +119,10 @@ class FinancialReport extends Component
         );
     }
 
-    public function render(): View
-    {
-        return view('livewire.financial-report');
-    }
+public function render(): View
+{
+    return view('livewire.financial-report');
+}
 
     public function exception(Throwable $exception, Closure $stopPropagation): void
     {

@@ -286,7 +286,8 @@
         </section>
 
         <flux:callout icon="information-circle" color="blue">
-            Laporan ini adalah laporan manajemen berbasis stok. Kontribusi bersih = omzet − nilai terjual − kerugian produk rusak;
+            Laporan ini adalah laporan manajemen berbasis stok. Kontribusi bersih = omzet − nilai terjual − kerugian
+            produk rusak;
             belum memperhitungkan biaya operasional, kas, pajak, utang, atau piutang.
         </flux:callout>
     </flux:sidebar-content>
