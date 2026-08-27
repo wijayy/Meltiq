@@ -55,32 +55,33 @@ it('filters movements and calculates net movement by product and location', func
         ]]);
 });
 
-it('filters movements by location type', function () {
+it('filters movements by movement type', function () {
     $product = Product::factory()->create();
     $warehouse = Location::factory()->create(['type' => 'warehouse']);
     $outlet = Location::factory()->create(['type' => 'outlet']);
-    $virtual = Location::factory()->create(['type' => 'virtual']);
 
-    $warehouseMovement = StockMovement::factory()->create([
+    $transfer = StockMovement::factory()->create([
+        'movement_type' => 'transfer',
         'product_id' => $product->id,
         'from_location_id' => $warehouse->id,
         'to_location_id' => $outlet->id,
     ]);
     StockMovement::factory()->create([
+        'movement_type' => 'damaged',
         'product_id' => $product->id,
         'from_location_id' => $outlet->id,
-        'to_location_id' => $virtual->id,
+        'to_location_id' => null,
     ]);
 
     $component = Livewire::test(StockMovementIndex::class)
-        ->set('locationType', 'warehouse');
+        ->set('movementType', 'transfer');
 
     expect($component->instance()->movements()->modelKeys())
-        ->toBe([$warehouseMovement->id]);
+        ->toBe([$transfer->id]);
 });
 
-it('resets an invalid movement location type filter', function () {
+it('resets an invalid movement type filter', function () {
     Livewire::test(StockMovementIndex::class)
-        ->set('locationType', 'invalid')
-        ->assertSet('locationType', '');
+        ->set('movementType', 'invalid')
+        ->assertSet('movementType', '');
 });

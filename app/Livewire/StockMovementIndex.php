@@ -37,7 +37,7 @@ class StockMovementIndex extends Component
     public string $locationSlug = '';
 
     #[Url(as: 'type', except: '')]
-    public string $locationType = '';
+    public string $movementType = '';
 
     public function updatedPeriodBegin(): void
     {
@@ -59,10 +59,10 @@ class StockMovementIndex extends Component
         $this->clearComputedData();
     }
 
-    public function updatedLocationType(): void
+    public function updatedMovementType(): void
     {
-        if (! in_array($this->locationType, ['', 'warehouse', 'outlet', 'virtual'], true)) {
-            $this->locationType = '';
+        if (! in_array($this->movementType, ['', 'production', 'transfer', 'sale', 'discount', 'damaged', 'expired', 'return', 'adjustment'], true)) {
+            $this->movementType = '';
         }
 
         $this->clearComputedData();
@@ -95,9 +95,7 @@ class StockMovementIndex extends Component
             ->when($this->locationSlug, fn ($query) => $query->where(fn ($query) => $query
                 ->whereHas('fromLocation', fn ($query) => $query->where('slug', $this->locationSlug))
                 ->orWhereHas('toLocation', fn ($query) => $query->where('slug', $this->locationSlug))))
-            ->when($this->locationType, fn ($query) => $query->where(fn ($query) => $query
-                ->whereHas('fromLocation', fn ($query) => $query->where('type', $this->locationType))
-                ->orWhereHas('toLocation', fn ($query) => $query->where('type', $this->locationType))))
+            ->when($this->movementType, fn ($query) => $query->where('movement_type', $this->movementType))
             ->latest('movement_date')
             ->latest('id')
             ->get();
@@ -189,7 +187,7 @@ class StockMovementIndex extends Component
                 'period_end' => $this->periodEnd !== '' ? Carbon::parse($this->periodEnd)->format('d/m/Y') : 'Sekarang',
                 'product' => $product ? $product->name . ' — ' . $product->sku : 'Semua Produk',
                 'location' => $location ? $location->name . ' (' . ucfirst($location->type) . ')' : 'Semua Lokasi',
-                'location_type' => $this->locationType !== '' ? ucfirst($this->locationType) : 'Semua Tipe',
+                'movement_type' => $this->movementType !== '' ? ucfirst($this->movementType) : 'Semua Tipe',
                 'exported_at' => now()->format('d/m/Y H:i:s'),
             ],
         );

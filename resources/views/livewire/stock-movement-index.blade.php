@@ -45,11 +45,16 @@
                 </flux:select>
             </div>
             <div class="w-full sm:w-64">
-                <flux:select wire:model.live="locationType" label="Tipe">
+                <flux:select wire:model.live="movementType" label="Tipe">
                     <flux:select.option value="">Semua Tipe</flux:select.option>
-                    <flux:select.option value="warehouse">Gudang</flux:select.option>
-                    <flux:select.option value="outlet">Outlet</flux:select.option>
-                    <flux:select.option value="virtual">Virtual</flux:select.option>
+                    <flux:select.option value="production">Produksi</flux:select.option>
+                    <flux:select.option value="transfer">Pengiriman</flux:select.option>
+                    <flux:select.option value="sale">Penjualan</flux:select.option>
+                    <flux:select.option value="discount">Diskon</flux:select.option>
+                    <flux:select.option value="damaged">Rusak</flux:select.option>
+                    <flux:select.option value="expired">Kedaluwarsa</flux:select.option>
+                    <flux:select.option value="return">Pengembalian Lama</flux:select.option>
+                    <flux:select.option value="adjustment">Penyesuaian</flux:select.option>
                 </flux:select>
             </div>
         </div>
